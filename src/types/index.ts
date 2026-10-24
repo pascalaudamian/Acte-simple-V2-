@@ -1,5 +1,38 @@
 export type Language = 'ro' | 'en';
 
+export interface CountyOption {
+  code: string;
+  name: { ro: string; en: string };
+}
+
+export interface OfficeService {
+  id: string;
+  procedureIds: string[];
+  label: { ro: string; en: string };
+  institutionNames: string[];
+}
+
+export interface OfficeRecord {
+  id: string;
+  name: { ro: string; en: string };
+  institutionName: string;
+  countyCode: string;
+  locality: string;
+  address: { ro: string; en: string };
+  serviceIds: string[];
+  officialUrl: string;
+  verification: { status: 'verified' | 'pending_review'; verifiedAt: string | null; sourceUrl: string };
+  coordinates: { latitude: number; longitude: number } | null;
+}
+
+export interface OfficeSearchFilters {
+  serviceId?: string;
+  countyCode?: string;
+  locality?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
 export type ProcedureCategory = 
   | 'identitate'
   | 'auto'

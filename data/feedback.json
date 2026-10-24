@@ -1,5 +1,27 @@
 [
   {
+    "id": "fb-1792879841883-9e431563",
+    "procedureId": "cazier-judiciar",
+    "type": "procedure_improvement",
+    "message": "76r7f78f86 86f8 f8u",
+    "ipHash": "2d4f39f46443ceae",
+    "createdAt": "2026-10-24T22:10:41.883Z"
+  },
+  {
+    "id": "test-fb-1792879790185",
+    "procedureId": "buletin-14-ani",
+    "type": "procedure_improvement",
+    "message": "Test persistent feedback entry",
+    "createdAt": "2026-10-24T22:09:50.185Z"
+  },
+  {
+    "id": "test-fb-1792879764326",
+    "procedureId": "buletin-14-ani",
+    "type": "procedure_improvement",
+    "message": "Test persistent feedback entry",
+    "createdAt": "2026-10-24T22:09:24.326Z"
+  },
+  {
     "id": "fb-1792866611679-2a447872",
     "procedureId": "buletin-14-ani",
     "type": "procedure_improvement",

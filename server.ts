@@ -3,6 +3,8 @@ import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { PROCEDURES } from './src/data/procedures.ts';
+import { COUNTIES } from './src/data/counties.ts';
+import { OFFICE_SERVICES } from './src/data/officeServices.ts';
 import { FORM_TEMPLATES } from './src/data/formTemplates.ts';
 import { AuditLog } from './src/types/index.ts';
 import {
@@ -125,6 +127,28 @@ apiRouter.get('/health', async (_req: Request, res: Response) => {
       editorialSecurity: Boolean(process.env.ACTESIMPLE_EDITOR_TOKEN)
     }
   });
+});
+
+// Office-finder reference data and read-only directory foundation
+apiRouter.get('/counties', (_req: Request, res: Response) => {
+  res.json({ total: COUNTIES.length, items: COUNTIES });
+});
+
+apiRouter.get('/services', (_req: Request, res: Response) => {
+  res.json({ total: OFFICE_SERVICES.length, items: OFFICE_SERVICES });
+});
+
+apiRouter.get('/offices', (req: Request, res: Response) => {
+  const { serviceId, countyCode, locality, limit = '50', page = '1' } = req.query;
+  const validService = !serviceId || (typeof serviceId === 'string' && OFFICE_SERVICES.some((service) => service.id === serviceId));
+  const validCounty = !countyCode || (typeof countyCode === 'string' && COUNTIES.some((county) => county.code === countyCode));
+  if (!validService || !validCounty || (locality !== undefined && typeof locality !== 'string')) {
+    res.status(400).json({ error: 'Filtrele pentru județ, localitate sau serviciu sunt invalide.' });
+    return;
+  }
+  const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
+  const limitNum = Math.min(100, Math.max(1, parseInt(limit as string, 10) || 50));
+  res.json({ total: 0, page: pageNum, totalPages: 0, items: [], directoryStatus: 'incomplete', message: 'Registrul ghișeelor este în curs de verificare editorială.' });
 });
 
 // Procedure Catalog & Search Endpoint

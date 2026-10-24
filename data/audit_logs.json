@@ -1,5 +1,32 @@
 [
   {
+    "id": "audit-fb-1792879841883-9e431563",
+    "timestamp": "2026-10-24T22:10:41.883Z",
+    "actor": "Cetățean (Anonimizat)",
+    "action": "update",
+    "procedureId": "cazier-judiciar",
+    "procedureTitle": "Certificat de Cazier Judiciar — Online sau la Ghișeu",
+    "details": "Semnalare cetățean [procedure_improvement]: \"76r7f78f86 86f8 f8u...\""
+  },
+  {
+    "id": "test-log-1792879790185",
+    "timestamp": "2026-10-24T22:09:50.185Z",
+    "actor": "Test Auditor (QA Engine)",
+    "action": "check_source",
+    "procedureId": "buletin-14-ani",
+    "procedureTitle": "Carte de identitate",
+    "details": "Automated durability verification"
+  },
+  {
+    "id": "test-log-1792879764326",
+    "timestamp": "2026-10-24T22:09:24.326Z",
+    "actor": "Test Auditor (QA Engine)",
+    "action": "check_source",
+    "procedureId": "buletin-14-ani",
+    "procedureTitle": "Carte de identitate",
+    "details": "Automated durability verification"
+  },
+  {
     "id": "audit-fb-1792866611679-2a447872",
     "timestamp": "2026-10-24T18:30:11.679Z",
     "actor": "Cetățean (Anonimizat)",
