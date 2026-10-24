@@ -1,0 +1,17 @@
+[
+  {
+    "id": "fb-1792866611679-2a447872",
+    "procedureId": "buletin-14-ani",
+    "type": "procedure_improvement",
+    "message": "Confirm că la Sectorul 1 este necesară programare online prealabilă pe site-ul primăriei.",
+    "ipHash": "2b407358621ec90a",
+    "createdAt": "2026-10-24T18:30:11.679Z"
+  },
+  {
+    "id": "test-fb-1792866590279",
+    "procedureId": "buletin-14-ani",
+    "type": "procedure_improvement",
+    "message": "Test persistent feedback entry",
+    "createdAt": "2026-10-24T18:29:50.279Z"
+  }
+]

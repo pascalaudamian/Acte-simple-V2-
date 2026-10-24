@@ -1,0 +1,160 @@
+import { OfficialSource, AuditLog } from '../types';
+
+export const OFFICIAL_SOURCES: OfficialSource[] = [
+  {
+    id: 'src-dgep',
+    institutionName: 'Direcția Generală de Evidență a Persoanelor (DGEP / MAI)',
+    authorityType: 'Ministerul Afacerilor Interne',
+    sourceUrl: 'http://dgep.mai.gov.ro',
+    relatedProcedureIds: ['buletin-14-ani', 'buletin-schimbare'],
+    lastCheckedTimestamp: '2026-10-24T08:15:00Z',
+    lastSuccessfulCheck: '2026-10-24T08:15:00Z',
+    status: 'verified',
+    notes: 'Monitorizare OUG 97/2005, modificări aduse de Legea 162/2020 privind implementarea Cărții Electronice de Identitate (CEI) și programul pilot Cluj-Napoca extins la nivel național.',
+    changeHistory: [
+      {
+        date: '2026-02-10',
+        editor: 'Editorial Board (Legal)',
+        summary: 'Verificat cuantumul taxei de 7 RON și cerințele privind consimțământul părinților la 14 ani.'
+      }
+    ]
+  },
+  {
+    id: 'src-dgp-pasapoarte',
+    institutionName: 'Direcția Generală de Pașapoarte (DGP / MAI)',
+    authorityType: 'Ministerul Afacerilor Interne',
+    sourceUrl: 'https://pasapoarte.mai.gov.ro',
+    relatedProcedureIds: ['pasaport-electronic'],
+    lastCheckedTimestamp: '2026-10-24T08:20:00Z',
+    lastSuccessfulCheck: '2026-10-24T08:20:00Z',
+    status: 'verified',
+    notes: 'Verificare taxe pașapoarte (258 RON / 234 RON) și reguli de programare exclusivă prin epasapoarte.ro.',
+    changeHistory: [
+      {
+        date: '2026-01-15',
+        editor: 'Editorial Board (Civic Desk)',
+        summary: 'Confirmat disponibilitatea serviciului de livrare prin curierat a pașapoartelor la domiciliu.'
+      }
+    ]
+  },
+  {
+    id: 'src-dgpciv',
+    institutionName: 'Direcția Generală Permise de Conducere și Înmatriculări (DGPCIV)',
+    authorityType: 'Ministerul Afacerilor Interne',
+    sourceUrl: 'https://dgpci.mai.gov.ro',
+    relatedProcedureIds: ['permis-conducere-schimbare', 'inmatriculare-auto'],
+    lastCheckedTimestamp: '2026-10-24T08:25:00Z',
+    lastSuccessfulCheck: '2026-10-24T08:25:00Z',
+    status: 'verified',
+    notes: 'Cod Rutier OUG 195/2002, bareme medicale auto, taxe certificat și plăcuțe.',
+    changeHistory: [
+      {
+        date: '2026-03-01',
+        editor: 'Editorial Board (Auto)',
+        summary: 'Actualizat formularul de programare online drpciv-booking și clarificat regulile privind ITP valabil la transcriere.'
+      }
+    ]
+  },
+  {
+    id: 'src-igi',
+    institutionName: 'Inspectoratul General pentru Imigrări (IGI / MAI)',
+    authorityType: 'Ministerul Afacerilor Interne',
+    sourceUrl: 'https://igi.mai.gov.ro',
+    relatedProcedureIds: ['rezidenta-ue', 'permis-sedere-non-ue-munca'],
+    lastCheckedTimestamp: '2026-10-24T08:30:00Z',
+    lastSuccessfulCheck: '2026-10-24T08:30:00Z',
+    status: 'verified',
+    notes: 'Monitorizare contingent anual de lucrători străini nou-admiși pe piața muncii, portaligi.mai.gov.ro, cerințe OUG 194/2002 și OUG 102/2005.',
+    changeHistory: [
+      {
+        date: '2026-02-28',
+        editor: 'Editorial Board (Immigration)',
+        summary: 'Verificat procedura de depunere dosar online cu 30 de zile înainte de expirarea vizei.'
+      }
+    ]
+  },
+  {
+    id: 'src-hub-mai',
+    institutionName: 'HUB de Servicii MAI & Ghișeul.ro (ADR)',
+    authorityType: 'Autoritatea pentru Digitalizarea României & MAI',
+    sourceUrl: 'https://hub.mai.gov.ro',
+    relatedProcedureIds: ['cazier-judiciar'],
+    lastCheckedTimestamp: '2026-10-24T08:35:00Z',
+    lastSuccessfulCheck: '2026-10-24T08:35:00Z',
+    status: 'verified',
+    notes: 'Integrare cazier judiciar online gratuit și conectare cu conturile validate pe Ghiseul.ro.',
+    changeHistory: [
+      {
+        date: '2026-03-10',
+        editor: 'Editorial Board (Digital)',
+        summary: 'Verificat semnătura electronică calificată aplicată pe PDF-ul cazierului emis online.'
+      }
+    ]
+  },
+  {
+    id: 'src-anaf',
+    institutionName: 'Agenția Națională de Administrare Fiscală (ANAF)',
+    authorityType: 'Ministerul Finanțelor',
+    sourceUrl: 'https://www.anaf.ro',
+    relatedProcedureIds: ['nif-nerezidenti'],
+    lastCheckedTimestamp: '2026-10-24T08:40:00Z',
+    lastSuccessfulCheck: '2026-10-24T08:40:00Z',
+    status: 'verified',
+    notes: 'Formularul 030 pentru obținere NIF de către persoane fizice fără CNP.',
+    changeHistory: [
+      {
+        date: '2026-01-20',
+        editor: 'Editorial Board (Tax)',
+        summary: 'Verificat ghidul ANAF pentru atribuirea numărului de identificare fiscală.'
+      }
+    ]
+  },
+  {
+    id: 'src-cnas',
+    institutionName: 'Casa Națională de Asigurări de Sănătate (CNAS)',
+    authorityType: 'Guvernul României',
+    sourceUrl: 'https://cnas.ro',
+    relatedProcedureIds: ['card-sanatate-cnas'],
+    lastCheckedTimestamp: '2026-10-24T08:45:00Z',
+    lastSuccessfulCheck: '2026-10-24T08:45:00Z',
+    status: 'verified',
+    notes: 'Verificare procedură adeverință înlocuitoare de asigurat (valabilă 90 zile) și taxă card duplicat 15,41 RON.',
+    changeHistory: [
+      {
+        date: '2026-03-05',
+        editor: 'Editorial Board (Health)',
+        summary: 'Confirmat adresele de email oficiale pentru primirea dosarelor electronice la nivel județean.'
+      }
+    ]
+  }
+];
+
+export const INITIAL_AUDIT_LOGS: AuditLog[] = [
+  {
+    id: 'log-101',
+    timestamp: '2026-10-24T08:45:00Z',
+    actor: 'Stefan P. (Lead Editor)',
+    action: 'check_source',
+    procedureId: 'cazier-judiciar',
+    procedureTitle: 'Certificat de Cazier Judiciar',
+    details: 'Verificare automată sursă HUB MAI. Nu au fost detectate modificări legislative în Legea 290/2004.'
+  },
+  {
+    id: 'log-102',
+    timestamp: '2026-10-22T14:10:00Z',
+    actor: 'Maria V. (Senior Legal Analyst)',
+    action: 'verify',
+    procedureId: 'pasaport-electronic',
+    procedureTitle: 'Pașaport Simplu Electronic',
+    details: 'Verificat cuantumul taxei de pașaport (258 RON) pe platforma ghiseul.ro. Status menținut: VERIFICAT.'
+  },
+  {
+    id: 'log-103',
+    timestamp: '2026-10-20T11:30:00Z',
+    actor: 'Andrei D. (Immigration Specialist)',
+    action: 'update',
+    procedureId: 'rezidenta-ue',
+    procedureTitle: 'Certificat Înregistrare Rezidență UE',
+    details: 'Actualizat cerințele IGI pentru dovada mijloacelor de subzistență ale studenților străini.'
+  }
+];

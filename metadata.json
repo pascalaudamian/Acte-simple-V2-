@@ -1,0 +1,6 @@
+{
+  "name": "ActeSimple",
+  "description": "Ghid civic și asistent pentru proceduri administrative din România: documente necesare, taxe, programări oficiale și liste de verificare pentru cetățeni români și internaționali.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

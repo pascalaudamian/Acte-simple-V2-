@@ -1,0 +1,47 @@
+[
+  {
+    "id": "audit-fb-1792866611679-2a447872",
+    "timestamp": "2026-10-24T18:30:11.679Z",
+    "actor": "Cetățean (Anonimizat)",
+    "action": "update",
+    "procedureId": "buletin-14-ani",
+    "procedureTitle": "Carte de identitate — Prima eliberare la împlinirea vârstei de 14 ani",
+    "details": "Semnalare cetățean [procedure_improvement]: \"Confirm că la Sectorul 1 este necesară programare online prealabilă pe site-ul primăriei....\""
+  },
+  {
+    "id": "test-log-1792866590279",
+    "timestamp": "2026-10-24T18:29:50.279Z",
+    "actor": "Test Auditor (QA Engine)",
+    "action": "check_source",
+    "procedureId": "buletin-14-ani",
+    "procedureTitle": "Carte de identitate",
+    "details": "Automated durability verification"
+  },
+  {
+    "id": "log-101",
+    "timestamp": "2026-10-24T08:45:00Z",
+    "actor": "Stefan P. (Lead Editor)",
+    "action": "check_source",
+    "procedureId": "cazier-judiciar",
+    "procedureTitle": "Certificat de Cazier Judiciar",
+    "details": "Verificare automată sursă HUB MAI. Nu au fost detectate modificări legislative în Legea 290/2004."
+  },
+  {
+    "id": "log-102",
+    "timestamp": "2026-10-22T14:10:00Z",
+    "actor": "Maria V. (Senior Legal Analyst)",
+    "action": "verify",
+    "procedureId": "pasaport-electronic",
+    "procedureTitle": "Pașaport Simplu Electronic",
+    "details": "Verificat cuantumul taxei de pașaport (258 RON) pe platforma ghiseul.ro. Status menținut: VERIFICAT."
+  },
+  {
+    "id": "log-103",
+    "timestamp": "2026-10-20T11:30:00Z",
+    "actor": "Andrei D. (Immigration Specialist)",
+    "action": "update",
+    "procedureId": "rezidenta-ue",
+    "procedureTitle": "Certificat Înregistrare Rezidență UE",
+    "details": "Actualizat cerințele IGI pentru dovada mijloacelor de subzistență ale studenților străini."
+  }
+]
