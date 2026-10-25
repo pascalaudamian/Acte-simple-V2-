@@ -15,6 +15,8 @@ export const OfficeFinder: React.FC<OfficeFinderProps> = ({ lang, procedureId, o
   const [countyQuery, setCountyQuery] = useState('');
   const [locality, setLocality] = useState('');
   const [locationState, setLocationState] = useState<'idle' | 'loading' | 'selected' | 'denied'>('idle');
+  const [searchState, setSearchState] = useState<'idle' | 'loading' | 'complete' | 'error'>('idle');
+  const [searchMessage, setSearchMessage] = useState('');
 
   const filteredCounties = useMemo(() => COUNTIES.filter((county) => {
     const query = countyQuery.trim().toLocaleLowerCase();
@@ -29,6 +31,27 @@ export const OfficeFinder: React.FC<OfficeFinderProps> = ({ lang, procedureId, o
 
   const service = OFFICE_SERVICES.find((item) => item.id === serviceId);
   const selectedCounty = COUNTIES.find((county) => county.code === countyCode);
+
+  const searchOffices = async () => {
+    if (!serviceId) return;
+    setSearchState('loading');
+    setSearchMessage('');
+
+    const params = new URLSearchParams({ serviceId, page: '1', limit: '50' });
+    if (countyCode) params.set('countyCode', countyCode);
+    if (locality.trim()) params.set('locality', locality.trim());
+
+    try {
+      const response = await fetch(`/api/v1/offices?${params.toString()}`);
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'Search failed');
+      setSearchState('complete');
+      setSearchMessage(payload.message || t.incompleteDescription);
+    } catch {
+      setSearchState('error');
+      setSearchMessage(lang === 'ro' ? 'Căutarea nu a putut fi finalizată. Încearcă din nou.' : 'The search could not be completed. Please try again.');
+    }
+  };
 
   return (
     <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -61,10 +84,11 @@ export const OfficeFinder: React.FC<OfficeFinderProps> = ({ lang, procedureId, o
         </div>
         <div className="mt-6 flex flex-col sm:flex-row gap-3">
           <button type="button" onClick={useLocation} disabled={locationState === 'loading'} className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-800 hover:border-slate-400 disabled:opacity-60"><LocateFixed className="w-4 h-4" />{locationState === 'loading' ? t.locationLoading : t.locationButton}</button>
-          <button type="button" disabled={!serviceId} className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"><Search className="w-4 h-4" />{t.searchButton}</button>
+          <button type="button" onClick={searchOffices} disabled={!serviceId || searchState === 'loading'} className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-bold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"><Search className="w-4 h-4" />{searchState === 'loading' ? (lang === 'ro' ? 'Se caută…' : 'Searching…') : t.searchButton}</button>
         </div>
         {locationState === 'selected' && <p className="mt-3 text-xs text-emerald-700">{t.selectedLocation}</p>}
         {locationState === 'denied' && <p className="mt-3 text-xs text-amber-800">{navigator.geolocation ? t.locationDenied : t.locationUnavailable}</p>}
+        {searchMessage && <p role="status" className={`mt-3 text-sm ${searchState === 'error' ? 'text-red-700' : 'text-slate-700'}`}>{searchMessage}</p>}
       </div>
       <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
         <h2 className="text-lg font-bold text-slate-950">{t.incompleteTitle}</h2>
