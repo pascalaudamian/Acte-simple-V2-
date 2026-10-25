@@ -2,6 +2,42 @@ import { OfficialSource, AuditLog } from '../types';
 
 export const OFFICIAL_SOURCES: OfficialSource[] = [
   {
+    id: 'src-data-gov-institutii',
+    institutionName: 'Portalul național de date deschise — registrul instituțiilor publice',
+    authorityType: 'Guvernul României / data.gov.ro',
+    sourceUrl: 'https://data.gov.ro/dataset/institutii-publice',
+    relatedProcedureIds: ['buletin-14-ani'],
+    lastCheckedTimestamp: null,
+    lastSuccessfulCheck: null,
+    status: 'verified',
+    notes: 'Sursă recomandată pentru importul inițial al instituțiilor publice. Înregistrările sunt importate numai după validarea apartenenței instituției și a datelor de contact.',
+    changeHistory: []
+  },
+  {
+    id: 'src-catalog-servicii-publice',
+    institutionName: 'Catalogul Național al Serviciilor Publice',
+    authorityType: 'Autoritatea pentru Digitalizarea României',
+    sourceUrl: 'https://servicii.gov.ro',
+    relatedProcedureIds: ['buletin-14-ani'],
+    lastCheckedTimestamp: null,
+    lastSuccessfulCheck: null,
+    status: 'verified',
+    notes: 'Sursă națională pentru corelarea instituțiilor cu servicii publice și puncte de interacțiune.',
+    changeHistory: []
+  },
+  {
+    id: 'src-e-guvernare',
+    institutionName: 'e-guvernare — portalul administrației publice',
+    authorityType: 'Guvernul României',
+    sourceUrl: 'https://www.e-guvernare.ro',
+    relatedProcedureIds: ['cazier-judiciar'],
+    lastCheckedTimestamp: null,
+    lastSuccessfulCheck: null,
+    status: 'verified',
+    notes: 'Sursă de orientare pentru identificarea portalurilor oficiale ale administrației publice centrale.',
+    changeHistory: []
+  },
+  {
     id: 'src-dgep',
     institutionName: 'Direcția Generală de Evidență a Persoanelor (DGEP / MAI)',
     authorityType: 'Ministerul Afacerilor Interne',
