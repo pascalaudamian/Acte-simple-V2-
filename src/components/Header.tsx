@@ -166,6 +166,32 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
+      {/* Mobile Menu Dropdown */}
+      {mobileMenuOpen && (
+        <div className="xl:hidden bg-slate-900 border-b border-slate-800 px-4 pt-2 pb-6 space-y-2">
+          {navItems.map((item) => {
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded text-sm text-left ${
+                  isActive
+                    ? 'bg-slate-800 text-amber-400 font-medium'
+                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <span>{item.label}</span>
+                {item.count !== undefined && item.count > 0 && (
+                  <span className="bg-amber-500/20 text-amber-300 text-xs px-2 py-0.5 rounded font-mono">
+                    {item.count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </header>
   );
 };
