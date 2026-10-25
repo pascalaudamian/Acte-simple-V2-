@@ -11,6 +11,7 @@ import { DocumentPrep } from './components/DocumentPrep';
 import { ChecklistManager } from './components/ChecklistManager';
 import { SourceMonitor } from './components/SourceMonitor';
 import { RoeidSandbox } from './components/RoeidSandbox';
+import { OfficeFinder } from './components/OfficeFinder';
 import { Footer } from './components/Footer';
 import {
   Search,
@@ -369,7 +370,15 @@ export default function App() {
               </div>
             </section>
 
-            {/* International Citizens & Orientation Hero Banner */}
+                <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+                  <button onClick={() => setActiveTab('offices')} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-white border border-slate-200 px-5 py-3.5 text-sm font-bold text-slate-900 shadow-lg hover:border-amber-400 hover:text-amber-800 transition-colors">
+                    <Building2 className="w-4 h-4 text-amber-700" />
+                    {t.officeFinder.nav}
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </section>
+
+                {/* International Citizens & Orientation Hero Banner */}
             <section className="bg-amber-500/10 border-b border-amber-500/20 py-8 px-4 sm:px-6 lg:px-8">
               <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="space-y-1 text-center sm:text-left">
@@ -471,7 +480,12 @@ export default function App() {
           </div>
         )}
 
-        {/* VIEW 2: PROCEDURE CATALOG */}
+        {/* VIEW 2: OFFICE FINDER */}
+        {activeTab === 'offices' && (
+          <OfficeFinder lang={lang} procedureId={selectedProcedureId} onNavigate={handleNavigate} />
+        )}
+
+        {/* VIEW 3: PROCEDURE CATALOG */}
         {activeTab === 'catalog' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="mb-8">

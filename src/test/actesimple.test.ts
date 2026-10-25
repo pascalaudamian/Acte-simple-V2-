@@ -4,6 +4,8 @@ import crypto from 'crypto';
 import { PROCEDURES } from '../data/procedures.ts';
 import { OFFICIAL_SOURCES, INITIAL_AUDIT_LOGS } from '../data/sources.ts';
 import { FORM_TEMPLATES } from '../data/formTemplates.ts';
+import { COUNTIES } from '../data/counties.ts';
+import { OFFICE_SERVICES } from '../data/officeServices.ts';
 import {
   initDb,
   getAuditLogs,
@@ -62,7 +64,22 @@ test('2. Search and Filtering Logic', () => {
   assert.ok(euProcedures.length >= 2, 'Should find procedures applicable to EU citizens');
 });
 
-test('3. Orientation Wizard Decision Logic', () => {
+test('3. Office Finder Reference Data Integrity', () => {
+  assert.strictEqual(COUNTIES.length, 42, 'Romania must have 41 counties plus Bucharest');
+  assert.strictEqual(new Set(COUNTIES.map((county) => county.code)).size, COUNTIES.length, 'County codes must be unique');
+  COUNTIES.forEach((county) => {
+    assert.ok(county.name.ro.length > 1 && county.name.en.length > 1, `County ${county.code} needs bilingual labels`);
+  });
+  OFFICE_SERVICES.forEach((service) => {
+    assert.ok(service.label.ro && service.label.en, `Service ${service.id} needs bilingual labels`);
+    service.procedureIds.forEach((id) => assert.ok(PROCEDURES.some((procedure) => procedure.id === id), `Unknown procedure ${id}`));
+  });
+  const emptyDirectoryResponse = { items: [], directoryStatus: 'incomplete' as const };
+  assert.deepStrictEqual(emptyDirectoryResponse.items, []);
+  assert.strictEqual(emptyDirectoryResponse.directoryStatus, 'incomplete');
+});
+
+test('4. Orientation Wizard Decision Logic', () => {
   const nonEuWorkerRecommendations = PROCEDURES.filter(
     (p) => (p.audience.includes('non-eu') || p.audience.includes('all')) && (p.category === 'imigrare' || p.category === 'afaceri')
   );
