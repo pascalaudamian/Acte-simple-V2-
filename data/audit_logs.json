@@ -1,5 +1,32 @@
 [
   {
+    "id": "test-log-1792907796875",
+    "timestamp": "2026-10-25T05:56:36.875Z",
+    "actor": "Test Auditor (QA Engine)",
+    "action": "check_source",
+    "procedureId": "buletin-14-ani",
+    "procedureTitle": "Carte de identitate",
+    "details": "Automated durability verification"
+  },
+  {
+    "id": "test-log-1792907785173",
+    "timestamp": "2026-10-25T05:56:25.173Z",
+    "actor": "Test Auditor (QA Engine)",
+    "action": "check_source",
+    "procedureId": "buletin-14-ani",
+    "procedureTitle": "Carte de identitate",
+    "details": "Automated durability verification"
+  },
+  {
+    "id": "test-log-1792907765489",
+    "timestamp": "2026-10-25T05:56:05.489Z",
+    "actor": "Test Auditor (QA Engine)",
+    "action": "check_source",
+    "procedureId": "buletin-14-ani",
+    "procedureTitle": "Carte de identitate",
+    "details": "Automated durability verification"
+  },
+  {
     "id": "test-log-1792907341993",
     "timestamp": "2026-10-25T05:49:01.993Z",
     "actor": "Test Auditor (QA Engine)",

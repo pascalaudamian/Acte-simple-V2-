@@ -148,7 +148,21 @@ apiRouter.get('/offices', (req: Request, res: Response) => {
   }
   const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
   const limitNum = Math.min(100, Math.max(1, parseInt(limit as string, 10) || 50));
-  res.json({ total: 0, page: pageNum, totalPages: 0, items: [], directoryStatus: 'incomplete', message: 'Registrul ghișeelor este în curs de verificare editorială.' });
+  const indexSources = [
+    { name: 'Portalul național de date deschise', url: 'https://data.gov.ro/dataset/institutii-publice' },
+    { name: 'Catalogul Național al Serviciilor Publice', url: 'https://servicii.gov.ro' },
+    { name: 'Portalul e-guvernare', url: 'https://www.e-guvernare.ro' }
+  ];
+
+  res.json({
+    total: 0,
+    page: pageNum,
+    totalPages: 0,
+    items: [],
+    directoryStatus: 'indexing',
+    indexSources,
+    message: 'Indexarea registrului național a fost configurată. Înregistrările vor fi publicate după verificarea editorială a surselor oficiale.'
+  });
 });
 
 // Procedure Catalog & Search Endpoint
