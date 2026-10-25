@@ -18,7 +18,8 @@ import {
   HelpCircle,
   Send,
   Calendar,
-  ShieldCheck
+  ShieldCheck,
+  MapPin
 } from 'lucide-react';
 
 interface ProcedureDetailProps {
@@ -30,6 +31,7 @@ interface ProcedureDetailProps {
   onToggleStep: (procedureId: string, stepNumber: number) => void;
   onToggleSaveProcedure: (procedureId: string) => void;
   isSaved: boolean;
+  onFindOffice?: (procedureId: string) => void;
 }
 
 export const ProcedureDetail: React.FC<ProcedureDetailProps> = ({
@@ -41,6 +43,7 @@ export const ProcedureDetail: React.FC<ProcedureDetailProps> = ({
   onToggleStep,
   onToggleSaveProcedure,
   isSaved,
+  onFindOffice,
 }) => {
   const t = UI_TRANSLATIONS[lang];
   const [feedbackSent, setFeedbackSent] = useState(false);
@@ -205,13 +208,61 @@ export const ProcedureDetail: React.FC<ProcedureDetailProps> = ({
           <div>
             <div className="text-slate-500 mb-1 flex items-center gap-1">
               <Building2 className="w-3.5 h-3.5 text-slate-400" />
-              <span>{lang === 'ro' ? 'Depunere' : 'Filing'}</span>
+              <span>{lang === 'ro' ? 'Canal depunere' : 'Filing channel'}</span>
             </div>
             <div className="font-semibold text-slate-900">
-              {procedure.isOnlineSubmissionPossible 
-                ? (lang === 'ro' ? 'Online sau Ghișeu' : 'Online or Counter')
-                : (lang === 'ro' ? 'Prezență fizică' : 'In person')}
+              {procedure.submissionChannel === 'online'
+                ? '100% Online'
+                : procedure.submissionChannel === 'hybrid'
+                ? (lang === 'ro' ? 'Hibrid (Online + Ghișeu)' : 'Hybrid (Online + Desk)')
+                : (lang === 'ro' ? 'Prezență la Ghișeu' : 'In person')}
             </div>
+          </div>
+        </div>
+
+        {/* Channel & Office Finder Action Banner */}
+        <div className="no-print mb-10 p-4 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-slate-50 border-slate-200">
+          <div>
+            <div className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-amber-600" />
+              <span>
+                {procedure.submissionChannel === 'online'
+                  ? (lang === 'ro' ? 'Procedură disponibilă electronic' : 'Fully digital procedure')
+                  : (lang === 'ro' ? 'Găsește ghișeul arondat localității tale' : 'Locate the assigned local desk in your county')}
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 mt-1 max-w-xl">
+              {procedure.submissionChannel === 'online'
+                ? (lang === 'ro'
+                  ? 'Această procedură se poate iniția și soluționa direct online prin portalul securizat al statului.'
+                  : 'This procedure can be initiated and solved online through the official state portal.')
+                : (lang === 'ro'
+                  ? 'Verifică adresa exactă a ghișeului, programul de lucru cu publicul și dacă este necesară programare prealabilă.'
+                  : 'Check the exact office address, public hours, accessibility, and appointment requirements.')}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            {procedure.submissionChannel !== 'online' && onFindOffice && (
+              <button
+                type="button"
+                onClick={() => onFindOffice(procedure.id)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-900 hover:bg-slate-800 text-white transition-colors shadow-xs"
+              >
+                <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                <span>{lang === 'ro' ? 'Găsește ghișeul tău' : 'Find your office'}</span>
+              </button>
+            )}
+
+            <a
+              href={procedure.officialServiceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-300 hover:border-slate-400 bg-white text-slate-800 hover:bg-slate-50 transition-colors"
+            >
+              <span>{lang === 'ro' ? 'Portal Oficial' : 'Official Portal'}</span>
+              <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+            </a>
           </div>
         </div>
 
@@ -446,7 +497,7 @@ export const ProcedureDetail: React.FC<ProcedureDetailProps> = ({
             </div>
           </div>
 
-          <div className="no-print pt-2">
+          <div className="no-print pt-2 flex flex-wrap items-center gap-3">
             <a
               href={procedure.officialServiceUrl}
               target="_blank"
@@ -456,6 +507,16 @@ export const ProcedureDetail: React.FC<ProcedureDetailProps> = ({
               <span>{t.procedure.officialLink}</span>
               <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
             </a>
+
+            {onFindOffice && (
+              <button
+                onClick={() => onFindOffice(procedure.id)}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-sm cursor-pointer"
+              >
+                <MapPin className="w-4 h-4 text-slate-950" />
+                <span>{lang === 'ro' ? 'Găsește un ghișeu arondat' : 'Find an assigned counter'}</span>
+              </button>
+            )}
           </div>
         </section>
 

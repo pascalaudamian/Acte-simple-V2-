@@ -33,10 +33,18 @@ export const ProcedureCard: React.FC<ProcedureCardProps> = ({
     justitie: { ro: 'Justiție & Cazier', en: 'Justice & Records' },
     imigrare: { ro: 'Imigrare & Rezidență', en: 'Immigration & Residence' },
     sanatate: { ro: 'Sănătate (CNAS)', en: 'Health (CNAS)' },
-    afaceri: { ro: 'Afaceri & Taxe (ANAF)', en: 'Business & Tax' }
+    afaceri: { ro: 'Afaceri & Firme', en: 'Business & Registry' },
+    social: { ro: 'Beneficii Sociale', en: 'Social Benefits' },
+    munca: { ro: 'Muncă & Șomaj', en: 'Employment & Labor' },
+    pensii: { ro: 'Pensii & Retragere', en: 'Pensions' },
+    educatie: { ro: 'Educație & Diplome', en: 'Education' },
+    proprietate: { ro: 'Cadastru & Proprietate', en: 'Cadastre & Property' },
+    'mediu-agricultura': { ro: 'Agricultură & Mediu', en: 'Agriculture' },
+    cetatenie: { ro: 'Cetățenie & MAE', en: 'Citizenship & Travel' }
   };
 
   const catName = categoryLabels[procedure.category]?.[lang] || procedure.category;
+  const channel = procedure.submissionChannel || (procedure.isOnlineSubmissionPossible ? 'online' : 'in_person');
 
   return (
     <div 
@@ -47,12 +55,28 @@ export const ProcedureCard: React.FC<ProcedureCardProps> = ({
         {/* Unboxed Metadata Header (Zero-Pill Discipline) */}
         <div className="flex items-center justify-between text-xs text-slate-500 mb-2.5">
           <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="font-medium text-slate-700">{catName}</span>
+            <span className="font-semibold text-slate-800">{catName}</span>
             <span aria-hidden="true">·</span>
             <span className="flex items-center gap-1 text-slate-600">
               <Building2 className="w-3.5 h-3.5 text-slate-400" />
               {procedure.institution.shortName}
             </span>
+            <span aria-hidden="true">·</span>
+            {channel === 'online' && (
+              <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                Online
+              </span>
+            )}
+            {channel === 'hybrid' && (
+              <span className="text-[11px] font-medium text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">
+                Hibrid
+              </span>
+            )}
+            {channel === 'in_person' && (
+              <span className="text-[11px] font-medium text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-200">
+                Ghișeu
+              </span>
+            )}
           </div>
 
           {/* Quick Bookmark Toggle */}

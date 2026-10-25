@@ -12,7 +12,10 @@ import { ChecklistManager } from './components/ChecklistManager';
 import { SourceMonitor } from './components/SourceMonitor';
 import { RoeidSandbox } from './components/RoeidSandbox';
 import { OfficeFinder } from './components/OfficeFinder';
+import { LifeEventWizard } from './components/LifeEventWizard';
+import { EditorialWorkflow } from './components/EditorialWorkflow';
 import { Footer } from './components/Footer';
+import { ADMINISTRATIVE_DOMAINS } from './data/taxonomy';
 import {
   Search,
   Compass,
@@ -28,7 +31,8 @@ import {
   WifiOff,
   Filter,
   CheckCircle2,
-  Clock
+  Clock,
+  MapPin
 } from 'lucide-react';
 
 const STORAGE_KEY_LANG = 'actesimple_lang';
@@ -50,10 +54,14 @@ export default function App() {
   // 2. Navigation & View State
   const [activeTab, setActiveTab] = useState<string>('home');
   const [selectedProcedureId, setSelectedProcedureId] = useState<string | null>(null);
+  const [officeFinderServiceId, setOfficeFinderServiceId] = useState<string | undefined>(undefined);
+  const [officeFinderCountyCode, setOfficeFinderCountyCode] = useState<string | undefined>(undefined);
 
   // 3. Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedDomain, setSelectedDomain] = useState<string>('all');
+  const [selectedChannel, setSelectedChannel] = useState<string>('all');
   const [selectedAudience, setSelectedAudience] = useState<string>('all');
 
   // 4. Offline State Detection
@@ -115,6 +123,38 @@ export default function App() {
       setSelectedProcedureId(null);
       setActiveTab(tab);
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Navigate to office finder for specific procedure
+  const handleFindOfficeForProcedure = (procedureId: string, countyCode?: string) => {
+    const proc = PROCEDURES.find((p) => p.id === procedureId);
+    let serviceId = proc?.officeFinderCategory;
+
+    if (!serviceId) {
+      if (procedureId.includes('pasaport')) serviceId = 'serv-pasapoarte';
+      else if (procedureId.includes('buletin')) serviceId = 'serv-buletin';
+      else if (procedureId.includes('permis-conducere')) serviceId = 'serv-permise-auto';
+      else if (procedureId.includes('inmatriculare')) serviceId = 'serv-inmatriculari';
+      else if (procedureId.includes('rezidenta') || procedureId.includes('sedere') || procedureId.includes('non-ue')) serviceId = 'serv-imigrare-igi';
+      else if (procedureId.includes('cazier')) serviceId = 'serv-cazier';
+      else if (procedureId.includes('nastere') || procedureId.includes('casatorie') || procedureId.includes('transcriere')) serviceId = 'serv-stare-civila';
+      else if (procedureId.includes('alocatie') || procedureId.includes('crestere-copil') || procedureId.includes('incluziune')) serviceId = 'serv-social-anpis';
+      else if (procedureId.includes('somaj') || procedureId.includes('revisal')) serviceId = 'serv-somaj-anofm';
+      else if (procedureId.includes('pensie')) serviceId = 'serv-pensii-cnpp';
+      else if (procedureId.includes('carte-funciara') || procedureId.includes('urbanism')) serviceId = 'serv-cadastru-ancpi';
+      else if (procedureId.includes('srl') || procedureId.includes('pfa')) serviceId = 'serv-onrc-firme';
+      else if (procedureId.includes('diplom') || procedureId.includes('primar')) serviceId = 'serv-educatie-cnred';
+      else if (procedureId.includes('apostila')) serviceId = 'serv-apostila-prefectura';
+      else if (procedureId.includes('apia') || procedureId.includes('animale')) serviceId = 'serv-agricultura-apia';
+      else if (procedureId.includes('cetatenie')) serviceId = 'serv-cetatenie-anc';
+      else if (procedureId.includes('nif')) serviceId = 'serv-taxe-anaf';
+      else if (procedureId.includes('sanatate')) serviceId = 'serv-sanatate-cnas';
+    }
+
+    setOfficeFinderServiceId(serviceId);
+    setOfficeFinderCountyCode(countyCode);
+    setActiveTab('offices');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -249,6 +289,17 @@ export default function App() {
       list = list.filter((p) => p.audience.includes(selectedAudience as any) || p.audience.includes('all'));
     }
 
+    if (selectedDomain !== 'all') {
+      list = list.filter((p) => p.administrativeDomain === selectedDomain);
+    }
+
+    if (selectedChannel !== 'all') {
+      list = list.filter((p) => {
+        const ch = p.submissionChannel || (p.isOnlineSubmissionPossible ? 'online' : 'in_person');
+        return ch === selectedChannel;
+      });
+    }
+
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter((p) => {
@@ -263,7 +314,7 @@ export default function App() {
     }
 
     return list;
-  }, [searchQuery, selectedCategory, selectedAudience]);
+  }, [searchQuery, selectedCategory, selectedDomain, selectedChannel, selectedAudience]);
 
   // Selected Procedure Object for detail view
   const currentProcedure = PROCEDURES.find((p) => p.id === selectedProcedureId);
@@ -271,12 +322,20 @@ export default function App() {
   const savedCount = Object.keys(checklists).length;
 
   const categories = [
-    { id: 'identitate', name: { ro: 'Acte Identitate & Pașapoarte', en: 'Identity Cards & Passports' }, icon: ShieldCheck, count: 3 },
-    { id: 'auto', name: { ro: 'Auto & Permise de Conducere', en: 'Vehicles & Driving Licenses' }, icon: Car, count: 2 },
-    { id: 'imigrare', name: { ro: 'Imigrare & Rezidență (IGI)', en: 'Immigration & Residence (IGI)' }, icon: Users, count: 2 },
-    { id: 'justitie', name: { ro: 'Justiție & Cazier Judiciar', en: 'Justice & Criminal Records' }, icon: Scale, count: 1 },
-    { id: 'sanatate', name: { ro: 'Sănătate & Card CNAS', en: 'Health Insurance (CNAS)' }, icon: HeartPulse, count: 1 },
-    { id: 'afaceri', name: { ro: 'Fiscalitate & NIF (ANAF)', en: 'Tax ID & Business (ANAF)' }, icon: Briefcase, count: 1 },
+    { id: 'identitate', name: { ro: 'Acte Identitate & Pașapoarte', en: 'Identity Cards & Passports' }, icon: ShieldCheck, count: PROCEDURES.filter(p => p.category === 'identitate').length },
+    { id: 'stare-civila', name: { ro: 'Stare Civilă (Naștere, Căsătorie)', en: 'Civil Status (Birth, Marriage)' }, icon: Users, count: PROCEDURES.filter(p => p.category === 'stare-civila').length },
+    { id: 'social', name: { ro: 'Beneficii Sociale & Alocații', en: 'Social Benefits & Child Allowance' }, icon: HeartPulse, count: PROCEDURES.filter(p => p.category === 'social').length },
+    { id: 'munca', name: { ro: 'Muncă & Șomaj (ANOFM)', en: 'Employment & Unemployment' }, icon: Briefcase, count: PROCEDURES.filter(p => p.category === 'munca').length },
+    { id: 'pensii', name: { ro: 'Pensii & Retragere (CNPP)', en: 'Pensions & Retirement' }, icon: Clock, count: PROCEDURES.filter(p => p.category === 'pensii').length },
+    { id: 'auto', name: { ro: 'Auto, Permise & Înmatriculări', en: 'Vehicles, Licenses & Registration' }, icon: Car, count: PROCEDURES.filter(p => p.category === 'auto').length },
+    { id: 'proprietate', name: { ro: 'Cadastru & Proprietate (ANCPI)', en: 'Cadastre & Property (ANCPI)' }, icon: Building2, count: PROCEDURES.filter(p => p.category === 'proprietate').length },
+    { id: 'afaceri', name: { ro: 'Firme & Registrul Comerțului (ONRC)', en: 'Business & Trade Register' }, icon: Briefcase, count: PROCEDURES.filter(p => p.category === 'afaceri').length },
+    { id: 'justitie', name: { ro: 'Justiție, Cazier & Apostilă', en: 'Justice, Records & Apostille' }, icon: Scale, count: PROCEDURES.filter(p => p.category === 'justitie').length },
+    { id: 'educatie', name: { ro: 'Educație & Echivalare (CNRED)', en: 'Education & Diploma Equivalence' }, icon: ShieldCheck, count: PROCEDURES.filter(p => p.category === 'educatie').length },
+    { id: 'imigrare', name: { ro: 'Imigrare & Rezidență (IGI)', en: 'Immigration & Residence (IGI)' }, icon: Users, count: PROCEDURES.filter(p => p.category === 'imigrare').length },
+    { id: 'cetatenie', name: { ro: 'Cetățenie Română (ANC)', en: 'Citizenship (ANC)' }, icon: ShieldCheck, count: PROCEDURES.filter(p => p.category === 'cetatenie').length },
+    { id: 'mediu-agricultura', name: { ro: 'Subvenții Agricole (APIA)', en: 'Agricultural Grants (APIA)' }, icon: Building2, count: PROCEDURES.filter(p => p.category === 'mediu-agricultura').length },
+    { id: 'sanatate', name: { ro: 'Sănătate & Card CNAS', en: 'Health Insurance (CNAS)' }, icon: HeartPulse, count: PROCEDURES.filter(p => p.category === 'sanatate').length }
   ];
 
   return (
@@ -370,16 +429,35 @@ export default function App() {
               </div>
             </section>
 
-                <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
-                  <button onClick={() => setActiveTab('offices')} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-white border border-slate-200 px-5 py-3.5 text-sm font-bold text-slate-900 shadow-lg hover:border-amber-400 hover:text-amber-800 transition-colors">
-                    <Building2 className="w-4 h-4 text-amber-700" />
-                    {t.officeFinder.nav}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </section>
+            {/* Life Events Assistant Hero Banner */}
+            <section className="bg-indigo-900/90 text-white border-b border-indigo-800 py-6 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div className="space-y-1 text-center sm:text-left">
+                  <div className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2 justify-center sm:justify-start">
+                    <Compass className="w-4 h-4 text-amber-300" />
+                    <span>{lang === 'ro' ? 'Asistent pe Etape de Viață (ROePAS & ServiciiPublice.gov.ro)' : 'Life Events Assistant (ROePAS Standards)'}</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-white">
+                    {lang === 'ro' ? 'Naștere, Căsătorie, Pensie, Firme, Cadastru sau Șomaj?' : 'Birth, Marriage, Retirement, Business, or Cadastre?'}
+                  </h3>
+                  <p className="text-xs text-indigo-200 max-w-2xl leading-relaxed">
+                    {lang === 'ro'
+                      ? 'Primește instantaneu lista procedurilor administrative aplicabile situației tale, documentele necesare și birourile arondate județului tău.'
+                      : 'Get instant official roadmaps tailored to your life situation, required documents, and local county desks.'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => setActiveTab('lifeEvents')}
+                  className="px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 rounded-xl text-xs font-bold transition-all shadow-sm inline-flex items-center gap-2 whitespace-nowrap shrink-0"
+                >
+                  <span>{lang === 'ro' ? 'Ghidaj pe Etape de Viață' : 'Open Life Events Guide'}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </section>
 
-                {/* International Citizens & Orientation Hero Banner */}
-            <section className="bg-amber-500/10 border-b border-amber-500/20 py-8 px-4 sm:px-6 lg:px-8">
+            {/* International Citizens & Orientation Hero Banner */}
+            <section className="bg-amber-500/10 border-b border-amber-500/20 py-6 px-4 sm:px-6 lg:px-8">
               <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="space-y-1 text-center sm:text-left">
                   <div className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-2 justify-center sm:justify-start">
@@ -396,6 +474,37 @@ export default function App() {
                 >
                   <span>{lang === 'ro' ? 'Deschide Ghidul de Orientare' : 'Open Orientation Wizard'}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </section>
+
+            {/* Office Finder & Interactive Map Entry Banner */}
+            <section className="bg-slate-900 text-white border-b border-slate-800 py-8 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="space-y-2 text-center md:text-left">
+                  <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2.5 py-1 rounded">
+                    <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{lang === 'ro' ? 'Ghișee în 41 de județe + București' : 'Counters in all 41 counties + Bucharest'}</span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                    {lang === 'ro' ? 'Găsește un ghișeu oficial & birou administrativ' : 'Find an Official Counter & Administrative Office'}
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                    {lang === 'ro'
+                      ? 'Localizează ghișeele de evidență a populației (SPCLEP), pașapoarte, permise auto (DRPCIV) și imigrare (IGI) arondate ție, cu adresă exactă, program de lucru cu publicul, linkuri de programare și indicații de traseu.'
+                      : 'Locate local population register counters (SPCLEP), passport offices, driving license services, and immigration (IGI) bureaus, with exact addresses, public hours, official booking portals, and navigation directions.'}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    setOfficeFinderServiceId(undefined);
+                    setActiveTab('offices');
+                  }}
+                  className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-md inline-flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  <MapPin className="w-4 h-4 text-slate-950" />
+                  <span>{lang === 'ro' ? 'Găsește un ghișeu' : 'Find an Office'}</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </section>
@@ -480,12 +589,7 @@ export default function App() {
           </div>
         )}
 
-        {/* VIEW 2: OFFICE FINDER */}
-        {activeTab === 'offices' && (
-          <OfficeFinder lang={lang} procedureId={selectedProcedureId} onNavigate={handleNavigate} />
-        )}
-
-        {/* VIEW 3: PROCEDURE CATALOG */}
+        {/* VIEW 2: PROCEDURE CATALOG */}
         {activeTab === 'catalog' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="mb-8">
@@ -499,7 +603,7 @@ export default function App() {
 
             {/* Filters Strip */}
             <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 mb-8 shadow-sm">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Search */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-1.5">
@@ -517,23 +621,39 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Category Filter */}
+                {/* Administrative Domain Filter */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-1.5">
-                    {t.catalog.filterCategory}
+                    {lang === 'ro' ? 'Domeniu Administrativ' : 'Administrative Domain'}
                   </label>
                   <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    value={selectedDomain}
+                    onChange={(e) => setSelectedDomain(e.target.value)}
                     className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white"
                   >
-                    <option value="all">{t.catalog.allCategories}</option>
-                    <option value="identitate">{lang === 'ro' ? 'Acte de Identitate & Pașapoarte' : 'Identity & Passports'}</option>
-                    <option value="auto">{lang === 'ro' ? 'Auto, Permise & Înmatriculări' : 'Vehicles & Driving'}</option>
-                    <option value="imigrare">{lang === 'ro' ? 'Imigrare & Rezidență (IGI)' : 'Immigration & Residence (IGI)'}</option>
-                    <option value="justitie">{lang === 'ro' ? 'Justiție & Cazier Judiciar' : 'Justice & Records'}</option>
-                    <option value="sanatate">{lang === 'ro' ? 'Sănătate (CNAS)' : 'Health (CNAS)'}</option>
-                    <option value="afaceri">{lang === 'ro' ? 'Fiscalitate & NIF (ANAF)' : 'Tax & Business (ANAF)'}</option>
+                    <option value="all">{lang === 'ro' ? 'Toate cele 10 domenii oficiale' : 'All 10 official domains'}</option>
+                    {ADMINISTRATIVE_DOMAINS.map((dom) => (
+                      <option key={dom.id} value={dom.id}>
+                        {dom.name[lang]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Submission Channel Filter */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-1.5">
+                    {lang === 'ro' ? 'Canal de depunere' : 'Submission channel'}
+                  </label>
+                  <select
+                    value={selectedChannel}
+                    onChange={(e) => setSelectedChannel(e.target.value)}
+                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white"
+                  >
+                    <option value="all">{lang === 'ro' ? 'Toate canalele (Online & Ghișeu)' : 'All channels (Online & Desk)'}</option>
+                    <option value="online">{lang === 'ro' ? '100% Online (fără deplasare)' : '100% Online'}</option>
+                    <option value="hybrid">{lang === 'ro' ? 'Hibrid (Online + Ghișeu)' : 'Hybrid (Online + Desk)'}</option>
+                    <option value="in_person">{lang === 'ro' ? 'Prezență fizică la Ghișeu' : 'In-Person at Desk'}</option>
                   </select>
                 </div>
 
@@ -551,6 +671,7 @@ export default function App() {
                     <option value="ro-citizen">{lang === 'ro' ? 'Cetățeni Români' : 'Romanian Citizens'}</option>
                     <option value="eu-citizen">{lang === 'ro' ? 'Cetățeni UE / SEE / Elveția' : 'EU / EEA / Swiss Citizens'}</option>
                     <option value="non-eu">{lang === 'ro' ? 'Cetățeni Non-UE' : 'Non-EU Nationals'}</option>
+                    <option value="family-member">{lang === 'ro' ? 'Membri de familie' : 'Family Members'}</option>
                   </select>
                 </div>
               </div>
@@ -561,11 +682,13 @@ export default function App() {
                   {filteredProcedures.length} {t.catalog.showingResults}
                 </span>
 
-                {(searchQuery || selectedCategory !== 'all' || selectedAudience !== 'all') && (
+                {(searchQuery || selectedCategory !== 'all' || selectedDomain !== 'all' || selectedChannel !== 'all' || selectedAudience !== 'all') && (
                   <button
                     onClick={() => {
                       setSearchQuery('');
                       setSelectedCategory('all');
+                      setSelectedDomain('all');
+                      setSelectedChannel('all');
                       setSelectedAudience('all');
                     }}
                     className="text-amber-700 hover:underline font-semibold"
@@ -623,6 +746,29 @@ export default function App() {
             onToggleStep={handleToggleStep}
             onToggleSaveProcedure={handleToggleSaveProcedure}
             isSaved={Boolean(checklists[currentProcedure.id])}
+            onFindOffice={handleFindOfficeForProcedure}
+          />
+        )}
+
+        {/* VIEW: LIFE EVENT WIZARD (NEW NATIONAL ASSISTANT) */}
+        {activeTab === 'lifeEvents' && (
+          <LifeEventWizard
+            lang={lang}
+            procedures={PROCEDURES}
+            onSelectProcedure={(id) => handleNavigate('detail', id)}
+            onFindOfficeForProcedure={handleFindOfficeForProcedure}
+            savedProcedureIds={Object.keys(checklists)}
+            onToggleSave={handleToggleSaveProcedure}
+          />
+        )}
+
+        {/* VIEW: ADMINISTRATIVE OFFICE FINDER & MAP */}
+        {activeTab === 'offices' && (
+          <OfficeFinder
+            lang={lang}
+            onNavigateToProcedure={(id) => handleNavigate('detail', id)}
+            initialServiceId={officeFinderServiceId}
+            initialCountyCode={officeFinderCountyCode}
           />
         )}
 
@@ -656,12 +802,21 @@ export default function App() {
           />
         )}
 
-        {/* VIEW 7: SOURCE MONITOR & EDITORIAL REGISTRY */}
+        {/* VIEW 7: EDITORIAL WORKFLOW & STATUTORY REVIEW */}
+        {activeTab === 'editorial' && (
+          <EditorialWorkflow
+            lang={lang}
+            procedures={PROCEDURES}
+            onSelectProcedure={(id) => handleNavigate('detail', id)}
+          />
+        )}
+
+        {/* VIEW 8: SOURCE MONITOR & EDITORIAL REGISTRY */}
         {activeTab === 'sources' && (
           <SourceMonitor lang={lang} />
         )}
 
-        {/* VIEW 8: ROEID INTEROPERABILITY ARCHITECTURE */}
+        {/* VIEW 9: ROEID INTEROPERABILITY ARCHITECTURE */}
         {activeTab === 'roeid' && (
           <RoeidSandbox lang={lang} />
         )}

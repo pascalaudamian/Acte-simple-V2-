@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Compass, BookOpen, BookmarkCheck, FileText } from 'lucide-react';
+import { Home, Compass, BookOpen, BookmarkCheck, FileText, MapPin } from 'lucide-react';
 import { Language } from '../types';
 
 interface MobileNavProps {
@@ -18,6 +18,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   const tabs = [
     { id: 'home', label: lang === 'ro' ? 'Acasă' : 'Home', icon: Home },
     { id: 'catalog', label: lang === 'ro' ? 'Catalog' : 'Catalog', icon: BookOpen },
+    { id: 'offices', label: lang === 'ro' ? 'Ghișee' : 'Offices', icon: MapPin },
     { id: 'international', label: lang === 'ro' ? 'Orientare' : 'Orientation', icon: Compass },
     { id: 'prep', label: lang === 'ro' ? 'Formulare' : 'Forms', icon: FileText },
     { id: 'checklists', label: lang === 'ro' ? 'Dosar' : 'Checklist', icon: BookmarkCheck, count: savedCount },
@@ -25,7 +26,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 text-slate-300 safe-bottom">
-      <div className="grid grid-cols-5 h-14">
+      <div className="grid grid-cols-6 h-14">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;

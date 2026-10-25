@@ -1,6 +1,7 @@
 import { Procedure } from '../types';
+import { EXTENDED_PROCEDURES } from './extendedProcedures';
 
-export const PROCEDURES: Procedure[] = [
+const BASE_PROCEDURES: Procedure[] = [
   {
     id: 'buletin-14-ani',
     slug: 'buletin-prima-eliberare-14-ani',
@@ -1807,4 +1808,52 @@ export const PROCEDURES: Procedure[] = [
       en: 'Can be requested via official county CAS email addresses with scanned documents.'
     }
   }
+];
+
+export const PROCEDURES: Procedure[] = [
+  ...BASE_PROCEDURES.map((p) => {
+    let domain = p.administrativeDomain;
+    let channel = p.submissionChannel;
+    let events = p.lifeEvents;
+    if (p.id.includes('buletin')) {
+      domain = 'civil_status';
+      channel = 'in_person';
+      events = ['moving_relocating'];
+    } else if (p.id.includes('pasaport')) {
+      domain = 'citizenship_travel';
+      channel = 'in_person';
+      events = ['moving_abroad'];
+    } else if (p.id.includes('cazier')) {
+      domain = 'justice_petitions';
+      channel = 'online';
+      events = ['starting_a_job', 'starting_a_business'];
+    } else if (p.id.includes('permis') || p.id.includes('inmatriculare')) {
+      domain = p.id.includes('inmatriculare') ? 'cadastre_housing' : 'civil_status';
+      channel = 'hybrid';
+      events = ['moving_relocating'];
+    } else if (p.id.includes('rezidenta') || p.id.includes('sedere')) {
+      domain = 'citizenship_travel';
+      channel = 'hybrid';
+      events = ['acquiring_citizenship', 'moving_relocating'];
+    } else if (p.id.includes('nif')) {
+      domain = 'business_registry';
+      channel = 'hybrid';
+      events = ['starting_a_business'];
+    } else if (p.id.includes('sanatate')) {
+      domain = 'social_benefits';
+      channel = 'online';
+      events = ['managing_health'];
+    }
+
+    return {
+      ...p,
+      administrativeDomain: domain || 'civil_status',
+      lifeEvents: events || ['moving_relocating'],
+      submissionChannel: channel || (p.isOnlineSubmissionPossible ? 'online' : 'in_person'),
+      editorialStatus: p.editorialStatus || 'verified',
+      editorialReviewDate: p.editorialReviewDate || p.lastVerifiedDate,
+      reviewedBy: p.reviewedBy || 'Comisia Editorială ActeSimple'
+    };
+  }),
+  ...EXTENDED_PROCEDURES
 ];

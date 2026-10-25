@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { UI_TRANSLATIONS } from '../utils/i18n';
-import { Globe, ChevronDown, BookmarkCheck, ShieldCheck } from 'lucide-react';
+import { Globe, Menu, X, BookmarkCheck, ShieldCheck } from 'lucide-react';
 
 interface HeaderProps {
   lang: Language;
@@ -18,23 +18,25 @@ export const Header: React.FC<HeaderProps> = ({
   onNavigate,
   savedCount,
 }) => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = UI_TRANSLATIONS[lang];
 
   const navItems = [
     { id: 'home', label: t.nav.home },
+    { id: 'lifeEvents', label: t.nav.lifeEvents },
     { id: 'catalog', label: t.nav.catalog },
-    { id: 'offices', label: t.officeFinder.nav },
+    { id: 'offices', label: t.nav.offices },
     { id: 'international', label: t.nav.international },
     { id: 'prep', label: t.nav.prep },
     { id: 'checklists', label: t.nav.checklists, count: savedCount },
+    { id: 'editorial', label: t.nav.admin },
     { id: 'sources', label: t.nav.sources },
     { id: 'roeid', label: t.nav.roeid }
   ];
 
   const handleNavClick = (id: string) => {
     onNavigate(id);
-    setMenuOpen(false);
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -76,50 +78,31 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </button>
 
-          {/* Main menu stays beside the brand on every viewport. */}
-          <div className="relative shrink-0">
-            <button
-              type="button"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-expanded={menuOpen}
-              aria-haspopup="menu"
-              className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-3 text-sm font-semibold text-slate-100 transition-colors hover:border-amber-400 hover:text-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-900"
-            >
-              <span>{lang === 'ro' ? 'Meniu' : 'Menu'}</span>
-              <ChevronDown className={`h-4 w-4 transition-transform ${menuOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {menuOpen && (
-              <nav
-                aria-label={lang === 'ro' ? 'Meniu principal' : 'Main menu'}
-                className="absolute left-0 top-[calc(100%+0.5rem)] z-50 w-[min(18rem,calc(100vw-2rem))] rounded-xl border border-slate-700 bg-slate-900 p-2 shadow-xl"
-              >
-                {navItems.map((item) => {
-                  const isActive = activeTab === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      role="menuitem"
-                      onClick={() => handleNavClick(item.id)}
-                      className={`flex min-h-11 w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
-                        isActive
-                          ? 'bg-slate-800 font-semibold text-amber-400'
-                          : 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                      }`}
-                    >
-                      <span>{item.label}</span>
-                      {item.count !== undefined && item.count > 0 && (
-                        <span className="rounded bg-amber-500/20 px-2 py-0.5 text-xs font-mono text-amber-300">
-                          {item.count}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </nav>
-            )}
-          </div>
+          {/* Zone 2: Navigation Links (Single-line, unboxed, hover underline) */}
+          <nav className="hidden xl:flex items-center gap-6 text-sm font-medium text-slate-300">
+            {navItems.map((item) => {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  className={`relative py-1 transition-colors whitespace-nowrap shrink-0 hover:text-white ${
+                    isActive ? 'text-amber-400 font-semibold' : 'text-slate-300'
+                  }`}
+                >
+                  {item.label}
+                  {item.count !== undefined && item.count > 0 && (
+                    <span className="ml-1.5 px-1.5 py-0.2 bg-amber-500/20 text-amber-300 text-xs font-mono rounded">
+                      {item.count}
+                    </span>
+                  )}
+                  {isActive && (
+                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-400 rounded-full" />
+                  )}
+                </button>
+              );
+            })}
+          </nav>
 
           {/* Zone 3: Primary Action & Language Toggle */}
           <div className="flex items-center gap-3 shrink-0">
@@ -162,6 +145,14 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
 
+            {/* Mobile Hamburger Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="xl:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded transition-colors"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
           </div>
         </div>
       </div>

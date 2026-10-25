@@ -6,7 +6,10 @@ import { PROCEDURES } from './src/data/procedures.ts';
 import { COUNTIES } from './src/data/counties.ts';
 import { OFFICE_SERVICES } from './src/data/officeServices.ts';
 import { FORM_TEMPLATES } from './src/data/formTemplates.ts';
-import { AuditLog } from './src/types/index.ts';
+import { COUNTIES } from './src/data/counties.ts';
+import { ADMINISTRATIVE_SERVICES } from './src/data/services.ts';
+import { ADMINISTRATIVE_DOMAINS, LIFE_EVENTS } from './src/data/taxonomy.ts';
+import { AuditLog, AdministrativeOffice, EditorialStatus } from './src/types/index.ts';
 import {
   initDb,
   getAuditLogs,
@@ -15,6 +18,10 @@ import {
   updateSourceCheck,
   saveFeedback,
   getFeedback,
+  getOffices,
+  getOfficeById,
+  saveOffice,
+  updateOffice,
   CitizenFeedback
 } from './src/db/index.ts';
 
@@ -167,11 +174,30 @@ apiRouter.get('/offices', (req: Request, res: Response) => {
 
 // Procedure Catalog & Search Endpoint
 apiRouter.get('/procedures', (req: Request, res: Response) => {
-  const { search, category, audience, limit = '50', page = '1' } = req.query;
+  const { search, category, domain, lifeEvent, channel, status, audience, limit = '50', page = '1' } = req.query;
   let results = [...PROCEDURES];
 
   if (category && typeof category === 'string' && category !== 'all') {
     results = results.filter((p) => p.category === category);
+  }
+
+  if (domain && typeof domain === 'string' && domain !== 'all') {
+    results = results.filter((p) => p.administrativeDomain === domain);
+  }
+
+  if (lifeEvent && typeof lifeEvent === 'string' && lifeEvent !== 'all') {
+    results = results.filter((p) => p.lifeEvents?.includes(lifeEvent as any));
+  }
+
+  if (channel && typeof channel === 'string' && channel !== 'all') {
+    results = results.filter((p) => {
+      const ch = p.submissionChannel || (p.isOnlineSubmissionPossible ? 'online' : 'in_person');
+      return ch === channel;
+    });
+  }
+
+  if (status && typeof status === 'string' && status !== 'all') {
+    results = results.filter((p) => (p.editorialStatus || 'verified') === status);
   }
 
   if (audience && typeof audience === 'string' && audience !== 'all') {
@@ -214,6 +240,72 @@ apiRouter.get('/procedures/:id', (req: Request, res: Response) => {
   }
   res.json(procedure);
 });
+
+// 10 Administrative Domains with procedure counts
+apiRouter.get('/domains', (_req: Request, res: Response) => {
+  const enriched = ADMINISTRATIVE_DOMAINS.map((dom) => {
+    const count = PROCEDURES.filter((p) => p.administrativeDomain === dom.id).length;
+    return { ...dom, count };
+  });
+  res.json({ total: enriched.length, items: enriched });
+});
+
+// Life Events with procedure counts
+apiRouter.get('/life-events', (_req: Request, res: Response) => {
+  const enriched = LIFE_EVENTS.map((event) => {
+    const count = PROCEDURES.filter((p) =>
+      p.lifeEvents?.includes(event.id) || (p.administrativeDomain && event.recommendedDomains.includes(p.administrativeDomain))
+    ).length;
+    return { ...event, count };
+  });
+  res.json({ total: enriched.length, items: enriched });
+});
+
+// Protected: Update procedure editorial status with audit logging
+apiRouter.patch(
+  '/procedures/:id/status',
+  requireEditorAuth,
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { status, note, actor = 'Redactor Autorizat' } = req.body;
+
+    const validStatuses: EditorialStatus[] = ['verified', 'pending_review', 'draft', 'outdated'];
+    if (!validStatuses.includes(status)) {
+      res.status(400).json({ error: 'Statut editorial invalid. Valori permise: verified, pending_review, draft, outdated.' });
+      return;
+    }
+
+    const procedure = PROCEDURES.find((p) => p.id === id);
+    if (!procedure) {
+      res.status(404).json({ error: 'Procedura nu a fost găsită în catalog.' });
+      return;
+    }
+
+    procedure.editorialStatus = status;
+    procedure.editorialReviewDate = new Date().toISOString();
+    procedure.reviewedBy = actor;
+
+    await saveAuditLog({
+      id: `audit-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+      timestamp: new Date().toISOString(),
+      actor,
+      action: status === 'verified' ? 'publish' : 'update',
+      procedureId: id,
+      procedureTitle: procedure.title.ro,
+      details: `Actualizare statut editorial în [${status.toUpperCase()}]. ${note || ''}`.trim()
+    });
+
+    res.json({
+      message: 'Statutul editorial al procedurii a fost actualizat cu succes.',
+      procedure: {
+        id: procedure.id,
+        editorialStatus: procedure.editorialStatus,
+        editorialReviewDate: procedure.editorialReviewDate,
+        reviewedBy: procedure.reviewedBy
+      }
+    });
+  }
+);
 
 // Procedure Categories with Counts
 apiRouter.get('/categories', (_req: Request, res: Response) => {
@@ -400,6 +492,302 @@ apiRouter.post(
     } catch (err) {
       console.error('Failed to persist feedback safely');
       res.status(500).json({ error: 'A apărut o problemă la înregistrarea semnalării. Vă rugăm să reîncercați.' });
+    }
+  }
+);
+
+// ==========================================
+// County & Office Finder Endpoints
+// ==========================================
+
+// Helper: Haversine distance in kilometers (straight-line)
+function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c * 10) / 10;
+}
+
+// 1. All Romanian Counties (41 counties + București)
+apiRouter.get('/counties', (req: Request, res: Response) => {
+  const { search } = req.query;
+  let results = [...COUNTIES];
+
+  if (typeof search === 'string' && search.trim()) {
+    const q = search.trim().toLowerCase();
+    results = results.filter(
+      (c) =>
+        c.code.toLowerCase() === q ||
+        c.name.ro.toLowerCase().includes(q) ||
+        c.name.en.toLowerCase().includes(q) ||
+        c.capital.toLowerCase().includes(q) ||
+        c.majorLocalities.some((loc) => loc.toLowerCase().includes(q))
+    );
+  }
+
+  res.json({
+    total: results.length,
+    items: results
+  });
+});
+
+// 2. Administrative Services List
+apiRouter.get('/services', (req: Request, res: Response) => {
+  const { category } = req.query;
+  let results = [...ADMINISTRATIVE_SERVICES];
+
+  if (typeof category === 'string' && category.trim()) {
+    results = results.filter((s) => s.category === category.trim());
+  }
+
+  res.json({
+    total: results.length,
+    items: results
+  });
+});
+
+// 3. Administrative Offices Directory with Proximity & Multi-Criteria Filtering
+apiRouter.get('/offices', async (req: Request, res: Response) => {
+  try {
+    const { county, service, procedure, city, institutionType, search, lat, lng } = req.query;
+    let offices = await getOffices();
+
+    // Filter by County code (e.g. 'B', 'CJ', 'TM')
+    if (typeof county === 'string' && county.trim()) {
+      const c = county.trim().toUpperCase();
+      offices = offices.filter((o) => o.county.toUpperCase() === c);
+    }
+
+    // Filter by Service ID (e.g. 'passports', 'id_cards')
+    if (typeof service === 'string' && service.trim()) {
+      const s = service.trim();
+      offices = offices.filter((o) => o.providedServiceIds.includes(s));
+    }
+
+    // Filter by Related Procedure ID (e.g. 'buletin-14-ani')
+    if (typeof procedure === 'string' && procedure.trim()) {
+      const p = procedure.trim();
+      offices = offices.filter((o) => o.relatedProcedureIds.includes(p));
+    }
+
+    // Filter by City / Sector
+    if (typeof city === 'string' && city.trim()) {
+      const ct = city.trim().toLowerCase();
+      offices = offices.filter((o) => o.city.toLowerCase().includes(ct));
+    }
+
+    // Filter by Institution Type
+    if (typeof institutionType === 'string' && institutionType.trim()) {
+      const inst = institutionType.trim().toUpperCase();
+      offices = offices.filter((o) => o.institutionType.toUpperCase() === inst);
+    }
+
+    // Free text search
+    if (typeof search === 'string' && search.trim()) {
+      const q = search.trim().toLowerCase();
+      offices = offices.filter(
+        (o) =>
+          o.name.ro.toLowerCase().includes(q) ||
+          o.name.en.toLowerCase().includes(q) ||
+          o.address.toLowerCase().includes(q) ||
+          o.city.toLowerCase().includes(q) ||
+          (o.phone && o.phone.toLowerCase().includes(q))
+      );
+    }
+
+    // Calculate proximity distance if user coordinates provided
+    let userLat: number | null = null;
+    let userLng: number | null = null;
+
+    if (lat !== undefined && lng !== undefined) {
+      const parsedLat = parseFloat(lat as string);
+      const parsedLng = parseFloat(lng as string);
+      if (
+        !isNaN(parsedLat) &&
+        !isNaN(parsedLng) &&
+        parsedLat >= -90 &&
+        parsedLat <= 90 &&
+        parsedLng >= -180 &&
+        parsedLng <= 180
+      ) {
+        userLat = parsedLat;
+        userLng = parsedLng;
+      }
+    }
+
+    let officesWithDistance: AdministrativeOffice[] = offices.map((o) => {
+      if (userLat !== null && userLng !== null) {
+        const dist = calculateDistanceKm(userLat, userLng, o.coordinates.lat, o.coordinates.lng);
+        return { ...o, distanceKm: dist };
+      }
+      return o;
+    });
+
+    // If user coordinates provided, sort ascending by straight-line distance
+    if (userLat !== null && userLng !== null) {
+      officesWithDistance.sort((a, b) => (a.distanceKm ?? 999999) - (b.distanceKm ?? 999999));
+    }
+
+    res.json({
+      total: officesWithDistance.length,
+      items: officesWithDistance
+    });
+  } catch (err) {
+    console.error('Error fetching administrative offices:', err);
+    res.status(500).json({ error: 'Eroare la regăsirea ghișeelor administrative.' });
+  }
+});
+
+// 4. Single Office Details
+apiRouter.get('/offices/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const office = await getOfficeById(id);
+    if (!office) {
+      res.status(404).json({ error: 'Ghișeul solicitat nu a fost găsit în directorul oficial ActeSimple.' });
+      return;
+    }
+    res.json(office);
+  } catch (err) {
+    console.error('Error retrieving office details:', err);
+    res.status(500).json({ error: 'Eroare la regăsirea detaliilor ghișeului.' });
+  }
+});
+
+// 5. Protected: Create / Add New Official Office (Editor Only)
+apiRouter.post(
+  '/offices',
+  rateLimiter('office_edit', 30, 15 * 60 * 1000),
+  requireEditorAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const payload = req.body as Partial<AdministrativeOffice>;
+
+      // Strict validation
+      if (!payload.name?.ro || !payload.name?.en) {
+        res.status(400).json({ error: 'Numele ghișeului în RO și EN este obligatoriu.' });
+        return;
+      }
+      if (!payload.county || !COUNTIES.some((c) => c.code.toUpperCase() === payload.county?.toUpperCase())) {
+        res.status(400).json({ error: 'Codul de județ este invalid sau nu există în lista oficială a României.' });
+        return;
+      }
+      if (!payload.city || !payload.address) {
+        res.status(400).json({ error: 'Localitatea și adresa sunt obligatorii.' });
+        return;
+      }
+      if (
+        !payload.coordinates ||
+        typeof payload.coordinates.lat !== 'number' ||
+        typeof payload.coordinates.lng !== 'number' ||
+        payload.coordinates.lat < 43 ||
+        payload.coordinates.lat > 49 ||
+        payload.coordinates.lng < 20 ||
+        payload.coordinates.lng > 30
+      ) {
+        res.status(400).json({ error: 'Coordonatele geografice sunt invalide sau se află în afara granițelor României.' });
+        return;
+      }
+      if (!payload.sourceUrl || !payload.sourceUrl.startsWith('http')) {
+        res.status(400).json({ error: 'Adresa URL a sursei oficiale de verificare este obligatorie.' });
+        return;
+      }
+
+      const officeId = payload.id && payload.id.trim() ? payload.id.trim() : `office-${Date.now()}`;
+      const newOffice: AdministrativeOffice = {
+        id: officeId,
+        name: payload.name,
+        institutionType: payload.institutionType || 'SPCLEP',
+        county: payload.county.toUpperCase(),
+        city: payload.city.trim(),
+        address: payload.address.trim(),
+        coordinates: {
+          lat: payload.coordinates.lat,
+          lng: payload.coordinates.lng
+        },
+        phone: payload.phone?.trim(),
+        email: payload.email?.trim(),
+        websiteUrl: payload.websiteUrl?.trim(),
+        bookingUrl: payload.bookingUrl?.trim(),
+        providedServiceIds: Array.isArray(payload.providedServiceIds) ? payload.providedServiceIds : [],
+        relatedProcedureIds: Array.isArray(payload.relatedProcedureIds) ? payload.relatedProcedureIds : [],
+        openingHours: payload.openingHours || {
+          ro: 'Luni - Vineri: 08:30 - 16:30',
+          en: 'Monday - Friday: 08:30 - 16:30'
+        },
+        accessibility: payload.accessibility || { wheelchairAccessible: true },
+        appointmentRequirement: payload.appointmentRequirement || 'recommended',
+        appointmentNotes: payload.appointmentNotes,
+        sourceUrl: payload.sourceUrl.trim(),
+        lastVerifiedTimestamp: new Date().toISOString(),
+        verificationStatus: 'verified'
+      };
+
+      await saveOffice(newOffice);
+
+      // Log in audit trail
+      const editorActor = (req as any).editorActor || 'Redactor Autorizat';
+      await saveAuditLog({
+        id: `audit-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`,
+        timestamp: new Date().toISOString(),
+        actor: editorActor,
+        action: 'verify',
+        details: `Adăugare ghișeu nou: ${newOffice.name.ro} (${newOffice.city}, ${newOffice.county})`
+      });
+
+      res.status(201).json({
+        message: 'Ghișeul administrativ a fost adăugat cu succes în catalog.',
+        office: newOffice
+      });
+    } catch (err) {
+      console.error('Failed to create office:', err);
+      res.status(500).json({ error: 'Eroare la salvarea ghișeului.' });
+    }
+  }
+);
+
+// 6. Protected: Update Existing Official Office (Editor Only)
+apiRouter.put(
+  '/offices/:id',
+  rateLimiter('office_edit', 30, 15 * 60 * 1000),
+  requireEditorAuth,
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const existing = await getOfficeById(id);
+      if (!existing) {
+        res.status(404).json({ error: 'Ghișeul specificat nu există.' });
+        return;
+      }
+
+      const updates = req.body as Partial<AdministrativeOffice>;
+      const updated = await updateOffice(id, updates);
+      if (!updated) {
+        res.status(404).json({ error: 'Ghișeul specificat nu există.' });
+        return;
+      }
+
+      const editorActor = (req as any).editorActor || 'Redactor Autorizat';
+      await saveAuditLog({
+        id: `audit-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`,
+        timestamp: new Date().toISOString(),
+        actor: editorActor,
+        action: 'update',
+        details: `Actualizare date ghișeu: ${updated.name.ro} (${updated.id})`
+      });
+
+      res.json({
+        message: 'Datele ghișeului au fost actualizate cu succes.',
+        office: updated
+      });
+    } catch (err) {
+      console.error('Failed to update office:', err);
+      res.status(500).json({ error: 'Eroare la actualizarea ghișeului.' });
     }
   }
 );

@@ -5,7 +5,11 @@ import { PROCEDURES } from '../data/procedures.ts';
 import { OFFICIAL_SOURCES, INITIAL_AUDIT_LOGS } from '../data/sources.ts';
 import { FORM_TEMPLATES } from '../data/formTemplates.ts';
 import { COUNTIES } from '../data/counties.ts';
-import { OFFICE_SERVICES } from '../data/officeServices.ts';
+import { ADMINISTRATIVE_SERVICES } from '../data/services.ts';
+import { VERIFIED_OFFICES } from '../data/offices.ts';
+import { ADMINISTRATIVE_DOMAINS, LIFE_EVENTS } from '../data/taxonomy.ts';
+import { UI_TRANSLATIONS } from '../utils/i18n.ts';
+import { isValidLatLng, getSafeZoom, sanitizeCoordinates } from '../utils/geo.ts';
 import {
   initDb,
   getAuditLogs,
@@ -13,7 +17,9 @@ import {
   getSources,
   updateSourceCheck,
   saveFeedback,
-  getFeedback
+  getFeedback,
+  getOffices,
+  getOfficeById
 } from '../db/index.ts';
 
 test('1. Procedure Catalog Integrity', () => {
@@ -64,22 +70,7 @@ test('2. Search and Filtering Logic', () => {
   assert.ok(euProcedures.length >= 2, 'Should find procedures applicable to EU citizens');
 });
 
-test('3. Office Finder Reference Data Integrity', () => {
-  assert.strictEqual(COUNTIES.length, 42, 'Romania must have 41 counties plus Bucharest');
-  assert.strictEqual(new Set(COUNTIES.map((county) => county.code)).size, COUNTIES.length, 'County codes must be unique');
-  COUNTIES.forEach((county) => {
-    assert.ok(county.name.ro.length > 1 && county.name.en.length > 1, `County ${county.code} needs bilingual labels`);
-  });
-  OFFICE_SERVICES.forEach((service) => {
-    assert.ok(service.label.ro && service.label.en, `Service ${service.id} needs bilingual labels`);
-    service.procedureIds.forEach((id) => assert.ok(PROCEDURES.some((procedure) => procedure.id === id), `Unknown procedure ${id}`));
-  });
-  const emptyDirectoryResponse = { items: [], directoryStatus: 'incomplete' as const };
-  assert.deepStrictEqual(emptyDirectoryResponse.items, []);
-  assert.strictEqual(emptyDirectoryResponse.directoryStatus, 'incomplete');
-});
-
-test('4. Orientation Wizard Decision Logic', () => {
+test('3. Orientation Wizard Decision Logic', () => {
   const nonEuWorkerRecommendations = PROCEDURES.filter(
     (p) => (p.audience.includes('non-eu') || p.audience.includes('all')) && (p.category === 'imigrare' || p.category === 'afaceri')
   );
@@ -302,3 +293,263 @@ test('10. Safe Behavior When Database is Disconnected or Empty', async () => {
   const logs = await getAuditLogs();
   assert.ok(Array.isArray(logs), 'Audit logs must return array even in fallback mode');
 });
+
+test('11. Romanian Counties Catalog (41 Counties + București)', () => {
+  // Must have exactly 42 administrative divisions: 41 counties + București
+  assert.strictEqual(COUNTIES.length, 42, 'Must contain all 41 counties plus Bucharest');
+
+  const codes = new Set<string>();
+  COUNTIES.forEach((county) => {
+    assert.ok(county.code && county.code.length >= 1 && county.code.length <= 2, `Invalid county code: ${county.code}`);
+    assert.ok(!codes.has(county.code), `Duplicate county code: ${county.code}`);
+    codes.add(county.code);
+
+    assert.ok(county.name.ro && county.name.ro.length > 2, `Missing RO name for county ${county.code}`);
+    assert.ok(county.name.en && county.name.en.length > 2, `Missing EN name for county ${county.code}`);
+    assert.ok(county.capital && county.capital.length > 2, `Missing capital for county ${county.code}`);
+    assert.ok(Array.isArray(county.majorLocalities) && county.majorLocalities.length > 0, `Missing localities for ${county.code}`);
+  });
+
+  // Verify key counties
+  assert.ok(codes.has('B'), 'Must include București');
+  assert.ok(codes.has('CJ'), 'Must include Cluj');
+  assert.ok(codes.has('TM'), 'Must include Timiș');
+  assert.ok(codes.has('IS'), 'Must include Iași');
+  assert.ok(codes.has('BV'), 'Must include Brașov');
+  assert.ok(codes.has('CT'), 'Must include Constanța');
+});
+
+test('12. Administrative Services & Office Dataset Integrity', () => {
+  assert.ok(ADMINISTRATIVE_SERVICES.length >= 6, 'Must provide at least 6 core administrative services');
+
+  ADMINISTRATIVE_SERVICES.forEach((service) => {
+    assert.ok(service.id, 'Service missing ID');
+    assert.ok(service.title.ro, `Service ${service.id} missing RO title`);
+    assert.ok(service.title.en, `Service ${service.id} missing EN title`);
+    assert.ok(service.responsibleAuthority, `Service ${service.id} missing responsible authority`);
+    assert.ok(Array.isArray(service.relatedProcedureIds), `Service ${service.id} missing procedure IDs`);
+  });
+
+  assert.ok(VERIFIED_OFFICES.length >= 10, 'Must have at least 10 seeded verified administrative offices');
+
+  VERIFIED_OFFICES.forEach((office) => {
+    assert.ok(office.id, 'Office missing ID');
+    assert.ok(office.name.ro, `Office ${office.id} missing RO name`);
+    assert.ok(office.name.en, `Office ${office.id} missing EN name`);
+    assert.ok(office.address, `Office ${office.id} missing address`);
+    assert.ok(office.county, `Office ${office.id} missing county`);
+    assert.ok(COUNTIES.some((c) => c.code === office.county), `Office ${office.id} has invalid county code`);
+
+    // Romania geographic boundary check
+    // Lat: approx 43.6°N to 48.3°N, Lng: approx 20.2°E to 29.7°E
+    assert.ok(
+      office.coordinates.lat >= 43.5 && office.coordinates.lat <= 48.5,
+      `Office ${office.id} latitude ${office.coordinates.lat} outside Romania`
+    );
+    assert.ok(
+      office.coordinates.lng >= 20.0 && office.coordinates.lng <= 30.0,
+      `Office ${office.id} longitude ${office.coordinates.lng} outside Romania`
+    );
+
+    assert.ok(office.openingHours.ro, `Office ${office.id} missing RO opening hours`);
+    assert.ok(office.sourceUrl.startsWith('http'), `Office ${office.id} invalid source URL`);
+    assert.strictEqual(office.verificationStatus, 'verified', `Office ${office.id} must be marked verified`);
+  });
+});
+
+test('13. Haversine Straight-Line Distance Calculation Accuracy', () => {
+  function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Math.round(R * c * 10) / 10;
+  }
+
+  // Bucharest Sector 1 (Piata Amzei: 44.4449, 26.0963) to Cluj-Napoca (46.7712, 23.6236)
+  const distBucToCluj = calculateDistanceKm(44.4449, 26.0963, 46.7712, 23.6236);
+  assert.ok(distBucToCluj >= 300 && distBucToCluj <= 350, `Expected ~325 km between Buc and Cluj, got ${distBucToCluj}`);
+
+  // Bucharest Sector 1 to Bucharest Sector 2 (Chiristigiilor: 44.4485, 26.1287)
+  const distBetweenSectors = calculateDistanceKm(44.4449, 26.0963, 44.4485, 26.1287);
+  assert.ok(distBetweenSectors < 5.0, `Expected < 5 km between Sector 1 and Sector 2, got ${distBetweenSectors}`);
+
+  // Identical point distance should be 0
+  const distSamePoint = calculateDistanceKm(44.4449, 26.0963, 44.4449, 26.0963);
+  assert.strictEqual(distSamePoint, 0);
+});
+
+test('14. Bilingual Localization & Office Finder Dictionary Integrity', () => {
+  assert.ok(UI_TRANSLATIONS.ro.offices, 'Missing RO offices dictionary');
+  assert.ok(UI_TRANSLATIONS.en.offices, 'Missing EN offices dictionary');
+
+  // Verify mandatory prompt translation keys
+  assert.strictEqual(UI_TRANSLATIONS.ro.nav.offices, 'Găsește un ghișeu');
+  assert.strictEqual(UI_TRANSLATIONS.en.nav.offices, 'Find an Office');
+
+  assert.ok(UI_TRANSLATIONS.ro.offices.title.length > 5);
+  assert.ok(UI_TRANSLATIONS.en.offices.title.length > 5);
+  assert.ok(UI_TRANSLATIONS.ro.offices.straightLineDist.includes('linie dreaptă'));
+  assert.ok(UI_TRANSLATIONS.en.offices.straightLineDist.includes('straight-line'));
+  assert.ok(UI_TRANSLATIONS.ro.offices.directoryIncomplete.length > 5);
+  assert.ok(UI_TRANSLATIONS.en.offices.directoryIncomplete.length > 5);
+});
+
+test('15. Administrative Domains Taxonomy & Full 10-Domain Coverage', () => {
+  // Confirm all 10 requested administrative domains exist
+  const expectedDomains = [
+    'civil_status',
+    'social_benefits',
+    'employment',
+    'pensions',
+    'education',
+    'cadastre_housing',
+    'justice_petitions',
+    'business_registry',
+    'environment_agriculture',
+    'citizenship_travel'
+  ];
+
+  assert.strictEqual(ADMINISTRATIVE_DOMAINS.length, 10, 'Must have exactly 10 official administrative domains');
+  expectedDomains.forEach((domId) => {
+    const found = ADMINISTRATIVE_DOMAINS.find((d) => d.id === domId);
+    assert.ok(found, `Domain definition for ${domId} must exist`);
+    assert.ok(found.name.ro.length > 3, `Domain ${domId} missing RO name`);
+    assert.ok(found.name.en.length > 3, `Domain ${domId} missing EN name`);
+    assert.ok(found.officialPortalReference.startsWith('http'), `Domain ${domId} missing valid reference portal`);
+
+    // Verify there is at least one procedure assigned to this domain
+    const procsInDomain = PROCEDURES.filter((p) => p.administrativeDomain === domId);
+    assert.ok(procsInDomain.length >= 1, `Domain ${domId} must have at least one verified procedure in catalog`);
+  });
+});
+
+test('16. Life Events Taxonomy & Recommendation Mapping', () => {
+  assert.ok(LIFE_EVENTS.length >= 8, 'Must have major Romanian life events defined');
+
+  LIFE_EVENTS.forEach((event) => {
+    assert.ok(event.id, 'Life event missing id');
+    assert.ok(event.title.ro.length > 3, `Life event ${event.id} missing RO title`);
+    assert.ok(event.title.en.length > 3, `Life event ${event.id} missing EN title`);
+    assert.ok(event.recommendedDomains.length >= 1, `Life event ${event.id} must map to at least one domain`);
+
+    // Verify matching procedures logic
+    const matchingProcs = PROCEDURES.filter((p) =>
+      p.lifeEvents?.includes(event.id) ||
+      (p.administrativeDomain && event.recommendedDomains.includes(p.administrativeDomain))
+    );
+    assert.ok(matchingProcs.length >= 1, `Life event ${event.id} must match at least one civic procedure`);
+  });
+});
+
+test('17. Tri-State Submission Channel Classification (Online / Hybrid / In-Person)', () => {
+  const validChannels = ['online', 'hybrid', 'in_person'];
+
+  PROCEDURES.forEach((proc) => {
+    const channel = proc.submissionChannel || (proc.isOnlineSubmissionPossible ? 'online' : 'in_person');
+    assert.ok(validChannels.includes(channel), `Procedure ${proc.id} has invalid submission channel: ${channel}`);
+  });
+
+  // Specifically verify fully online procedures (e.g. ANCPI carte funciară, cazier, CNRED, APIA)
+  const onlineProcs = PROCEDURES.filter((p) => p.submissionChannel === 'online');
+  assert.ok(onlineProcs.some((p) => p.id === 'extras-carte-funciara-online'), 'ANCPI online extract must be classified as online');
+  assert.ok(onlineProcs.some((p) => p.id === 'alocatie-stat-copii'), 'State child allowance must be classified as online submission');
+
+  // Verify in-person procedures requiring biometric capture or physical signatures
+  const inPersonProcs = PROCEDURES.filter((p) => p.submissionChannel === 'in_person');
+  assert.ok(inPersonProcs.some((p) => p.id === 'certificat-nastere-copil'), 'Birth civil status must require in-person attendance');
+  assert.ok(inPersonProcs.some((p) => p.id === 'apostila-haga-prefectura'), 'Prefecture apostille must require in-person attendance');
+});
+
+test('18. Editorial Workflow & Review Status Integrity', () => {
+  const validStatuses = ['verified', 'pending_review', 'draft', 'outdated'];
+
+  PROCEDURES.forEach((proc) => {
+    const status = proc.editorialStatus || 'verified';
+    assert.ok(validStatuses.includes(status), `Procedure ${proc.id} has invalid editorialStatus: ${status}`);
+    assert.ok(proc.lastVerifiedDate.length >= 8, `Procedure ${proc.id} missing lastVerifiedDate`);
+    assert.ok(proc.legalBasis.law.length > 5, `Procedure ${proc.id} missing statutory legalBasis`);
+    assert.ok(proc.officialServiceUrl.startsWith('http'), `Procedure ${proc.id} missing officialServiceUrl`);
+  });
+
+  // Verify no unverified machine-translated jargon without legal context
+  PROCEDURES.forEach((proc) => {
+    assert.ok(!proc.shortSummary.ro.includes('undefined'), `Procedure ${proc.id} has corrupt RO summary`);
+    assert.ok(!proc.shortSummary.en.includes('undefined'), `Procedure ${proc.id} has corrupt EN summary`);
+    assert.ok(!proc.legalBasis.law.includes('TBD'), `Procedure ${proc.id} missing real law reference`);
+  });
+});
+
+test('19. Office Finder Service Mapping Integration for Expanded Procedures', () => {
+  const serviceIdsInProcedures = PROCEDURES
+    .filter((p) => p.officeFinderCategory)
+    .map((p) => p.officeFinderCategory!);
+
+  serviceIdsInProcedures.forEach((servId) => {
+    const serviceExists = ADMINISTRATIVE_SERVICES.some((s) => s.id === servId);
+    assert.ok(serviceExists, `Service ID ${servId} referenced in procedure must exist in ADMINISTRATIVE_SERVICES`);
+  });
+
+  // Verify that new services have corresponding offices indexed in major hubs
+  const newlyAddedServices = [
+    'serv-stare-civila',
+    'serv-social-anpis',
+    'serv-somaj-anofm',
+    'serv-pensii-cnpp',
+    'serv-cadastru-ancpi',
+    'serv-onrc-firme',
+    'serv-apostila-prefectura',
+    'serv-cetatenie-anc'
+  ];
+
+  newlyAddedServices.forEach((servId) => {
+    const officesForService = VERIFIED_OFFICES.filter((o) => o.providedServiceIds.includes(servId));
+    assert.ok(officesForService.length >= 1, `Service ${servId} must have at least one verified office in directory`);
+  });
+});
+
+test('20. Geo-coordinates Sanitization & Leaflet LatLng Safety', () => {
+  // Test valid coordinate pairs
+  assert.strictEqual(isValidLatLng(44.4447, 26.0952), true, 'Bucharest coordinates must be valid');
+  assert.strictEqual(isValidLatLng(46.7712, 23.6236), true, 'Cluj coordinates must be valid');
+
+  // Test invalid coordinate pairs (NaN, null, undefined, strings, infinities, out of range)
+  assert.strictEqual(isValidLatLng(NaN, NaN), false, 'NaN lat/lng must be rejected');
+  assert.strictEqual(isValidLatLng(44.4, NaN), false, 'NaN lng must be rejected');
+  assert.strictEqual(isValidLatLng(NaN, 26.0), false, 'NaN lat must be rejected');
+  assert.strictEqual(isValidLatLng(undefined, 26.0), false, 'undefined lat must be rejected');
+  assert.strictEqual(isValidLatLng(44.0, undefined), false, 'undefined lng must be rejected');
+  assert.strictEqual(isValidLatLng(null, null), false, 'null lat/lng must be rejected');
+  assert.strictEqual(isValidLatLng('44.4', '26.0'), false, 'string coordinates must be rejected by strict number checker');
+  assert.strictEqual(isValidLatLng(Infinity, 26.0), false, 'Infinity lat must be rejected');
+  assert.strictEqual(isValidLatLng(95.0, 26.0), false, 'Latitude > 90 must be rejected');
+  assert.strictEqual(isValidLatLng(45.0, 195.0), false, 'Longitude > 180 must be rejected');
+
+  // Test sanitizeCoordinates
+  const validSanitized = sanitizeCoordinates({ lat: 44.4447, lng: 26.0952 });
+  assert.deepStrictEqual(validSanitized, { lat: 44.4447, lng: 26.0952 });
+  assert.strictEqual(sanitizeCoordinates({ lat: NaN, lng: 26.0 }), null);
+  assert.strictEqual(sanitizeCoordinates(null), null);
+  assert.strictEqual(sanitizeCoordinates(undefined), null);
+  assert.strictEqual(sanitizeCoordinates({}), null);
+
+  // Test safe zoom calculation - prevents Math.max(14, undefined) => NaN bug
+  assert.strictEqual(getSafeZoom(undefined, 14, 14), 14, 'undefined zoom must safely return fallback zoom 14');
+  assert.strictEqual(getSafeZoom(NaN, 14, 14), 14, 'NaN zoom must safely return fallback zoom 14');
+  assert.strictEqual(getSafeZoom(null, 14, 14), 14, 'null zoom must safely return fallback zoom 14');
+  assert.strictEqual(getSafeZoom(7, 14, 14), 14, 'Zoom 7 with minZoom 14 should return 14');
+  assert.strictEqual(getSafeZoom(16, 14, 14), 16, 'Zoom 16 with minZoom 14 should return 16');
+
+  // Verify all offices in VERIFIED_OFFICES pass coordinate validity
+  VERIFIED_OFFICES.forEach((office) => {
+    assert.ok(
+      isValidLatLng(office.coordinates.lat, office.coordinates.lng),
+      `Office ${office.id} must have valid finite coordinates`
+    );
+  });
+});
+

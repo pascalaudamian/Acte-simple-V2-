@@ -1,7 +1,7 @@
 [
   {
-    "id": "test-log-1792907796875",
-    "timestamp": "2026-10-25T05:56:36.875Z",
+    "id": "test-log-1792953826998",
+    "timestamp": "2026-10-25T18:43:46.998Z",
     "actor": "Test Auditor (QA Engine)",
     "action": "check_source",
     "procedureId": "buletin-14-ani",
@@ -9,8 +9,8 @@
     "details": "Automated durability verification"
   },
   {
-    "id": "test-log-1792907785173",
-    "timestamp": "2026-10-25T05:56:25.173Z",
+    "id": "test-log-1792953557275",
+    "timestamp": "2026-10-25T18:39:17.275Z",
     "actor": "Test Auditor (QA Engine)",
     "action": "check_source",
     "procedureId": "buletin-14-ani",
@@ -18,8 +18,8 @@
     "details": "Automated durability verification"
   },
   {
-    "id": "test-log-1792907765489",
-    "timestamp": "2026-10-25T05:56:05.489Z",
+    "id": "test-log-1792944829807",
+    "timestamp": "2026-10-25T16:13:49.807Z",
     "actor": "Test Auditor (QA Engine)",
     "action": "check_source",
     "procedureId": "buletin-14-ani",
@@ -27,8 +27,8 @@
     "details": "Automated durability verification"
   },
   {
-    "id": "test-log-1792907341993",
-    "timestamp": "2026-10-25T05:49:01.993Z",
+    "id": "test-log-1792944800747",
+    "timestamp": "2026-10-25T16:13:20.747Z",
     "actor": "Test Auditor (QA Engine)",
     "action": "check_source",
     "procedureId": "buletin-14-ani",
@@ -36,17 +36,8 @@
     "details": "Automated durability verification"
   },
   {
-    "id": "audit-fb-1792879841883-9e431563",
-    "timestamp": "2026-10-24T22:10:41.883Z",
-    "actor": "Cetățean (Anonimizat)",
-    "action": "update",
-    "procedureId": "cazier-judiciar",
-    "procedureTitle": "Certificat de Cazier Judiciar — Online sau la Ghișeu",
-    "details": "Semnalare cetățean [procedure_improvement]: \"76r7f78f86 86f8 f8u...\""
-  },
-  {
-    "id": "test-log-1792879790185",
-    "timestamp": "2026-10-24T22:09:50.185Z",
+    "id": "test-log-1792943841859",
+    "timestamp": "2026-10-25T15:57:21.859Z",
     "actor": "Test Auditor (QA Engine)",
     "action": "check_source",
     "procedureId": "buletin-14-ani",
@@ -54,8 +45,17 @@
     "details": "Automated durability verification"
   },
   {
-    "id": "test-log-1792879764326",
-    "timestamp": "2026-10-24T22:09:24.326Z",
+    "id": "test-log-1792943710004",
+    "timestamp": "2026-10-25T15:55:10.004Z",
+    "actor": "Test Auditor (QA Engine)",
+    "action": "check_source",
+    "procedureId": "buletin-14-ani",
+    "procedureTitle": "Carte de identitate",
+    "details": "Automated durability verification"
+  },
+  {
+    "id": "test-log-1792943676807",
+    "timestamp": "2026-10-25T15:54:36.807Z",
     "actor": "Test Auditor (QA Engine)",
     "action": "check_source",
     "procedureId": "buletin-14-ani",
