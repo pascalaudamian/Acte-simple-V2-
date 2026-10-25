@@ -1,5 +1,12 @@
 [
   {
+    "id": "test-fb-1792907341983",
+    "procedureId": "buletin-14-ani",
+    "type": "procedure_improvement",
+    "message": "Test persistent feedback entry",
+    "createdAt": "2026-10-25T05:49:01.983Z"
+  },
+  {
     "id": "fb-1792879841883-9e431563",
     "procedureId": "cazier-judiciar",
     "type": "procedure_improvement",
