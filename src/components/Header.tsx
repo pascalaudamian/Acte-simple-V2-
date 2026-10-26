@@ -59,7 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Navigation Bar - 3-Zone Contract */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-8">
+        <div className="flex items-center justify-between h-16 gap-3 sm:gap-5 2xl:gap-8">
           {/* Zone 1: Brand Wordmark */}
           <button
             onClick={() => handleNavClick('home')}
@@ -79,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Zone 2: Navigation Links (Single-line, unboxed, hover underline) */}
-          <nav className="hidden xl:flex items-center gap-6 text-sm font-medium text-slate-300">
+          <nav className="hidden min-[1600px]:flex items-center gap-4 text-sm font-medium text-slate-300">
             {navItems.map((item) => {
               const isActive = activeTab === item.id;
               return (
@@ -134,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Quick Checklist Button (Desktop) */}
             <button
               onClick={() => handleNavClick('checklists')}
-              className="hidden sm:flex items-center gap-2 px-3.5 py-2 text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-slate-950 rounded transition-colors shadow-sm whitespace-nowrap"
+              className="hidden lg:flex items-center gap-2 px-3.5 py-2 text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-slate-950 rounded transition-colors shadow-sm whitespace-nowrap"
             >
               <BookmarkCheck className="w-4 h-4" />
               <span>{t.nav.checklists}</span>
@@ -148,7 +148,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded transition-colors"
+              className="flex min-[1600px]:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded transition-colors"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -159,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="xl:hidden bg-slate-900 border-b border-slate-800 px-4 pt-2 pb-6 space-y-2">
+        <div className="block min-[1600px]:hidden max-h-[calc(100vh-7rem)] overflow-y-auto bg-slate-900 border-b border-slate-800 px-4 pt-2 pb-6 space-y-2">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (
