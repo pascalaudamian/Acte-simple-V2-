@@ -6,7 +6,6 @@ import { PROCEDURES } from './src/data/procedures.ts';
 import { COUNTIES } from './src/data/counties.ts';
 import { OFFICE_SERVICES } from './src/data/officeServices.ts';
 import { FORM_TEMPLATES } from './src/data/formTemplates.ts';
-import { COUNTIES } from './src/data/counties.ts';
 import { ADMINISTRATIVE_SERVICES } from './src/data/services.ts';
 import { ADMINISTRATIVE_DOMAINS, LIFE_EVENTS } from './src/data/taxonomy.ts';
 import { AuditLog, AdministrativeOffice, EditorialStatus } from './src/types/index.ts';
