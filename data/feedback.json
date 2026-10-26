@@ -1,5 +1,12 @@
 [
   {
+    "id": "test-fb-1793004878240",
+    "procedureId": "buletin-14-ani",
+    "type": "procedure_improvement",
+    "message": "Test persistent feedback entry",
+    "createdAt": "2026-10-26T08:54:38.240Z"
+  },
+  {
     "id": "test-fb-1792953826997",
     "procedureId": "buletin-14-ani",
     "type": "procedure_improvement",

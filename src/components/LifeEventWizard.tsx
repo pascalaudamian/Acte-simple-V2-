@@ -69,9 +69,12 @@ export const LifeEventWizard: React.FC<LifeEventWizardProps> = ({
   // Recommended Procedures based on event, audience, and domain
   const matchingProcedures = useMemo(() => {
     return procedures.filter((p) => {
-      // 1. Life event match
-      const eventMatch = p.lifeEvents?.includes(selectedEventId as any) ||
-        (p.administrativeDomain && activeLifeEvent.recommendedDomains.includes(p.administrativeDomain));
+      // Prefer explicit life-event mappings. Only use the domain fallback for
+      // legacy procedures that have not been assigned to a life event yet.
+      const hasExplicitLifeEventMapping = Boolean(p.lifeEvents && p.lifeEvents.length > 0);
+      const eventMatch = hasExplicitLifeEventMapping
+        ? p.lifeEvents!.includes(selectedEventId as any)
+        : Boolean(p.administrativeDomain && activeLifeEvent.recommendedDomains.includes(p.administrativeDomain));
 
       if (!eventMatch) return false;
 

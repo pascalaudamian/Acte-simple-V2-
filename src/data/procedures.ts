@@ -1258,7 +1258,7 @@ const BASE_PROCEDURES: Procedure[] = [
           en: 'Collection of the Biometric Residence Permit'
         },
         description: {
-          ro: 'După soluționare (cca. 30-45 zile), ridică cardul de plastic de la ghișeul IGI. Acesta conține CNP-ul tău de rezident și atestă dreptul de muncă.',
+          ro: 'După soluționare (cca. 30-45 zile), ridică cardul de plastic de la ghișeul IGI. Acesta conține CNP-ul tău de rezident și atestă dreptul de munc��.',
           en: 'Collect the plastic residence card after notification. It contains your resident CNP and confirms full work rights.'
         }
       }
@@ -1828,7 +1828,9 @@ export const PROCEDURES: Procedure[] = [
       channel = 'online';
       events = ['starting_a_job', 'starting_a_business'];
     } else if (p.id.includes('permis') || p.id.includes('inmatriculare')) {
-      domain = p.id.includes('inmatriculare') ? 'cadastre_housing' : 'civil_status';
+      // Vehicle services must not inherit the property/cadastre domain;
+      // otherwise they appear when users choose “Cumpăr o locuință”.
+      domain = 'civil_status';
       channel = 'hybrid';
       events = ['moving_relocating'];
     } else if (p.id.includes('rezidenta') || p.id.includes('sedere')) {
