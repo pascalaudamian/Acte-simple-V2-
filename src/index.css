@@ -38,11 +38,31 @@
 .theme-civic .bg-indigo-900\/90 { background-color: #2146d0 !important; color: white !important; }
 .theme-civic .bg-indigo-900\/90 .text-white,
 .theme-civic .bg-indigo-900\/90 .text-indigo-200 { color: white !important; }
+.theme-civic .bg-indigo-900\/90 button,
+.theme-civic .bg-indigo-900\/90 a { color: #ffffff !important; }
+.theme-civic .bg-indigo-900\/90 .bg-amber-400,
+.theme-civic .bg-indigo-900\/90 .bg-amber-500 { color: #17233b !important; }
 .theme-civic .bg-amber-500 { background-color: #f5a623 !important; }
 .theme-civic .text-amber-400,
 .theme-civic .text-amber-300 { color: #a76400 !important; }
 .theme-civic header { box-shadow: 0 1px 8px rgba(34, 61, 105, 0.08); }
 .theme-civic .procedure-card { border-color: var(--civic-border); box-shadow: 0 2px 8px rgba(40, 69, 120, 0.06); }
+
+/* The life-event wizard uses a dark gradient by default. Keep its
+   dedicated dark surface, but restore light foreground contrast in Civic. */
+.theme-civic .theme-civic-life-banner {
+  background: linear-gradient(115deg, #14284b 0%, #1d3764 52%, #273b73 100%) !important;
+  border-color: #47699f !important;
+  color: #f8fbff !important;
+}
+.theme-civic .theme-civic-life-banner .text-white { color: #f8fbff !important; }
+.theme-civic .theme-civic-life-banner .text-slate-300,
+.theme-civic .theme-civic-life-banner .text-indigo-200 { color: #d7e5fb !important; }
+.theme-civic .theme-civic-life-banner .text-slate-500 { color: #c4d5ed !important; }
+.theme-civic .theme-civic-life-banner .text-amber-300 { color: #ffd166 !important; }
+.theme-civic .theme-civic-life-banner .border-slate-700 { border-color: #7896c4 !important; }
+.theme-civic .theme-civic-life-banner .hover\:text-white:hover { color: #ffffff !important; }
+
 
 /* Print layout for checklists and official form previews */
 @media print {
