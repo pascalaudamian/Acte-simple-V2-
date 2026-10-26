@@ -7,8 +7,7 @@ import { COUNTIES } from './src/data/counties.ts';
 import { OFFICE_SERVICES } from './src/data/officeServices.ts';
 import { FORM_TEMPLATES } from './src/data/formTemplates.ts';
 import { ADMINISTRATIVE_SERVICES } from './src/data/services.ts';
-import { ADMINISTRATIVE_DOMAINS, LIFE_EVENTS } from './src/data/taxonomy.ts';
-import { AuditLog, AdministrativeOffice, EditorialStatus } from './src/types/index.ts';
+import { AuditLog, AdministrativeOffice } from './src/types/index.ts';
 import {
   initDb,
   getAuditLogs,
@@ -173,30 +172,11 @@ apiRouter.get('/offices', (req: Request, res: Response) => {
 
 // Procedure Catalog & Search Endpoint
 apiRouter.get('/procedures', (req: Request, res: Response) => {
-  const { search, category, domain, lifeEvent, channel, status, audience, limit = '50', page = '1' } = req.query;
+  const { search, category, audience, limit = '50', page = '1' } = req.query;
   let results = [...PROCEDURES];
 
   if (category && typeof category === 'string' && category !== 'all') {
     results = results.filter((p) => p.category === category);
-  }
-
-  if (domain && typeof domain === 'string' && domain !== 'all') {
-    results = results.filter((p) => p.administrativeDomain === domain);
-  }
-
-  if (lifeEvent && typeof lifeEvent === 'string' && lifeEvent !== 'all') {
-    results = results.filter((p) => p.lifeEvents?.includes(lifeEvent as any));
-  }
-
-  if (channel && typeof channel === 'string' && channel !== 'all') {
-    results = results.filter((p) => {
-      const ch = p.submissionChannel || (p.isOnlineSubmissionPossible ? 'online' : 'in_person');
-      return ch === channel;
-    });
-  }
-
-  if (status && typeof status === 'string' && status !== 'all') {
-    results = results.filter((p) => (p.editorialStatus || 'verified') === status);
   }
 
   if (audience && typeof audience === 'string' && audience !== 'all') {
@@ -239,72 +219,6 @@ apiRouter.get('/procedures/:id', (req: Request, res: Response) => {
   }
   res.json(procedure);
 });
-
-// 10 Administrative Domains with procedure counts
-apiRouter.get('/domains', (_req: Request, res: Response) => {
-  const enriched = ADMINISTRATIVE_DOMAINS.map((dom) => {
-    const count = PROCEDURES.filter((p) => p.administrativeDomain === dom.id).length;
-    return { ...dom, count };
-  });
-  res.json({ total: enriched.length, items: enriched });
-});
-
-// Life Events with procedure counts
-apiRouter.get('/life-events', (_req: Request, res: Response) => {
-  const enriched = LIFE_EVENTS.map((event) => {
-    const count = PROCEDURES.filter((p) =>
-      p.lifeEvents?.includes(event.id) || (p.administrativeDomain && event.recommendedDomains.includes(p.administrativeDomain))
-    ).length;
-    return { ...event, count };
-  });
-  res.json({ total: enriched.length, items: enriched });
-});
-
-// Protected: Update procedure editorial status with audit logging
-apiRouter.patch(
-  '/procedures/:id/status',
-  requireEditorAuth,
-  async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { status, note, actor = 'Redactor Autorizat' } = req.body;
-
-    const validStatuses: EditorialStatus[] = ['verified', 'pending_review', 'draft', 'outdated'];
-    if (!validStatuses.includes(status)) {
-      res.status(400).json({ error: 'Statut editorial invalid. Valori permise: verified, pending_review, draft, outdated.' });
-      return;
-    }
-
-    const procedure = PROCEDURES.find((p) => p.id === id);
-    if (!procedure) {
-      res.status(404).json({ error: 'Procedura nu a fost găsită în catalog.' });
-      return;
-    }
-
-    procedure.editorialStatus = status;
-    procedure.editorialReviewDate = new Date().toISOString();
-    procedure.reviewedBy = actor;
-
-    await saveAuditLog({
-      id: `audit-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
-      timestamp: new Date().toISOString(),
-      actor,
-      action: status === 'verified' ? 'publish' : 'update',
-      procedureId: id,
-      procedureTitle: procedure.title.ro,
-      details: `Actualizare statut editorial în [${status.toUpperCase()}]. ${note || ''}`.trim()
-    });
-
-    res.json({
-      message: 'Statutul editorial al procedurii a fost actualizat cu succes.',
-      procedure: {
-        id: procedure.id,
-        editorialStatus: procedure.editorialStatus,
-        editorialReviewDate: procedure.editorialReviewDate,
-        reviewedBy: procedure.reviewedBy
-      }
-    });
-  }
-);
 
 // Procedure Categories with Counts
 apiRouter.get('/categories', (_req: Request, res: Response) => {

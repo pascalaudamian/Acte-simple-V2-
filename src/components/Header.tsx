@@ -1,7 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Language } from '../types';
 import { UI_TRANSLATIONS } from '../utils/i18n';
-import { Globe, Menu, X, BookmarkCheck, ShieldCheck, Palette } from 'lucide-react';
+import {
+  Globe,
+  Menu,
+  X,
+  BookmarkCheck,
+  ShieldCheck,
+  Palette,
+  ChevronDown,
+  Compass,
+  BookOpen,
+  MapPin,
+  FileText,
+  Activity,
+  KeyRound,
+  Home,
+} from 'lucide-react';
 
 interface HeaderProps {
   lang: Language;
@@ -23,24 +38,52 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleTheme,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [desktopMenuOpen, setDesktopMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const t = UI_TRANSLATIONS[lang];
 
+  // Close dropdown on outside click or escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDesktopMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setDesktopMenuOpen(false);
+      }
+    };
+
+    if (desktopMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [desktopMenuOpen]);
+
   const navItems = [
-    { id: 'home', label: t.nav.home },
-    { id: 'lifeEvents', label: t.nav.lifeEvents },
-    { id: 'catalog', label: t.nav.catalog },
-    { id: 'offices', label: t.nav.offices },
-    { id: 'international', label: t.nav.international },
-    { id: 'prep', label: t.nav.prep },
-    { id: 'checklists', label: t.nav.checklists, count: savedCount },
-    { id: 'editorial', label: t.nav.admin },
-    { id: 'sources', label: t.nav.sources },
-    { id: 'roeid', label: t.nav.roeid }
+    { id: 'home', label: t.nav.home, icon: Home },
+    { id: 'lifeEvents', label: t.nav.lifeEvents, icon: Compass },
+    { id: 'catalog', label: t.nav.catalog, icon: BookOpen },
+    { id: 'offices', label: t.nav.offices, icon: MapPin },
+    { id: 'international', label: t.nav.international, icon: Globe },
+    { id: 'prep', label: t.nav.prep, icon: FileText },
+    { id: 'checklists', label: t.nav.checklists, count: savedCount, icon: BookmarkCheck },
+    { id: 'editorial', label: t.nav.admin, icon: ShieldCheck },
+    { id: 'sources', label: t.nav.sources, icon: Activity },
+    { id: 'roeid', label: t.nav.roeid, icon: KeyRound }
   ];
+
+  const isMenuChildActive = activeTab !== 'home';
 
   const handleNavClick = (id: string) => {
     onNavigate(id);
     setMobileMenuOpen(false);
+    setDesktopMenuOpen(false);
   };
 
   return (
@@ -64,49 +107,104 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Main Navigation Bar - 3-Zone Contract */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-3 sm:gap-5 2xl:gap-8">
-          {/* Zone 1: Brand Wordmark */}
-          <button
-            onClick={() => handleNavClick('home')}
-            className="flex items-center gap-2.5 text-left focus:outline-none group shrink-0"
-          >
-            <div className="w-8 h-8 rounded bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center font-bold text-slate-950 text-lg shadow-sm">
-              A
-            </div>
-            <div>
-              <span className="text-xl font-bold tracking-tight text-white group-hover:text-amber-300 transition-colors">
-                ActeSimple
-              </span>
-              <span className="hidden lg:inline text-xs text-slate-400 ml-2 font-normal">
-                .ro
-              </span>
-            </div>
-          </button>
+          {/* Left Group: Brand Wordmark + Menu button */}
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-5">
+            {/* Zone 1: Brand Wordmark */}
+            <button
+              onClick={() => handleNavClick('home')}
+              className="flex items-center gap-2.5 text-left focus:outline-none group shrink-0"
+              title={lang === 'ro' ? 'Pagina principală ActeSimple' : 'ActeSimple Home'}
+            >
+              <div className="w-8 h-8 rounded bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center font-bold text-slate-950 text-lg shadow-sm">
+                A
+              </div>
+              <div>
+                <span className="text-xl font-bold tracking-tight text-white group-hover:text-amber-300 transition-colors">
+                  ActeSimple
+                </span>
+                <span className="hidden lg:inline text-xs text-slate-400 ml-2 font-normal">
+                  .ro
+                </span>
+              </div>
+            </button>
 
-          {/* Zone 2: Navigation Links (Single-line, unboxed, hover underline) */}
-          <nav className="hidden min-[1600px]:flex items-center gap-4 text-sm font-medium text-slate-300">
-            {navItems.map((item) => {
-              const isActive = activeTab === item.id;
-              return (
+            {/* Zone 2: Navigation Links (Menu Dropdown) placed directly next to ActeSimple */}
+            <nav className="hidden md:flex items-center text-sm font-medium text-slate-300">
+              {/* Menu Button with Dropdown containing all navigation items */}
+              <div className="relative" ref={dropdownRef}>
                 <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`relative py-1 transition-colors whitespace-nowrap shrink-0 hover:text-white ${
-                    isActive ? 'text-amber-400 font-semibold' : 'text-slate-300'
+                  type="button"
+                  onClick={() => setDesktopMenuOpen(!desktopMenuOpen)}
+                  aria-expanded={desktopMenuOpen}
+                  aria-haspopup="true"
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded transition-colors whitespace-nowrap ${
+                    desktopMenuOpen || isMenuChildActive
+                      ? 'text-amber-400 font-semibold bg-slate-800 shadow-xs ring-1 ring-slate-700'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
                   }`}
                 >
-                  {item.label}
-                  {item.count !== undefined && item.count > 0 && (
-                    <span className="ml-1.5 px-1.5 py-0.2 bg-amber-500/20 text-amber-300 text-xs font-mono rounded">
-                      {item.count}
+                  <Menu className="w-4 h-4 text-amber-400" />
+                  <span>{t.nav.menu || (lang === 'ro' ? 'Meniu' : 'Menu')}</span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                      desktopMenuOpen ? 'rotate-180 text-amber-400' : 'text-slate-400'
+                    }`}
+                  />
+                  {savedCount > 0 && !isMenuChildActive && (
+                    <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-300 text-[10px] font-mono rounded">
+                      {savedCount}
                     </span>
                   )}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-400 rounded-full" />
-                  )}
                 </button>
-              );
-            })}
-          </nav>
+
+                {/* Dropdown Menu */}
+                {desktopMenuOpen && (
+                  <div
+                    className="absolute left-0 top-full mt-2 w-72 max-h-[calc(100vh-5rem)] overflow-y-auto bg-slate-900 border border-slate-700/90 rounded-lg shadow-2xl p-1.5 z-50 animate-in fade-in slide-in-from-top-1 duration-150"
+                    role="menu"
+                  >
+                    <div className="px-3 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800 mb-1">
+                      {lang === 'ro' ? 'Secțiuni & Servicii' : 'Sections & Services'}
+                    </div>
+                    <div className="space-y-0.5">
+                      {navItems.map((item) => {
+                        const isActive = activeTab === item.id;
+                        const Icon = item.icon;
+                        return (
+                          <button
+                            key={item.id}
+                            role="menuitem"
+                            onClick={() => handleNavClick(item.id)}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded text-left text-xs sm:text-sm transition-colors ${
+                              isActive
+                                ? 'bg-slate-800 text-amber-400 font-semibold'
+                                : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 truncate">
+                              {Icon && (
+                                <Icon
+                                  className={`w-4 h-4 shrink-0 ${
+                                    isActive ? 'text-amber-400' : 'text-slate-400'
+                                  }`}
+                                />
+                              )}
+                              <span className="truncate">{item.label}</span>
+                            </div>
+                            {item.count !== undefined && item.count > 0 && (
+                              <span className="ml-2 px-1.5 py-0.5 bg-amber-500/20 text-amber-300 text-xs font-mono rounded shrink-0">
+                                {item.count}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </nav>
+          </div>
 
           {/* Zone 3: Primary Action & Language Toggle */}
           <div className="flex items-center gap-3 shrink-0">
@@ -162,7 +260,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex min-[1600px]:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded transition-colors"
+              className="flex md:hidden p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded transition-colors"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -173,7 +271,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="block min-[1600px]:hidden max-h-[calc(100vh-7rem)] overflow-y-auto bg-slate-900 border-b border-slate-800 px-4 pt-2 pb-6 space-y-2">
+        <div className="block md:hidden max-h-[calc(100vh-7rem)] overflow-y-auto bg-slate-900 border-b border-slate-800 px-4 pt-2 pb-6 space-y-2">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             return (

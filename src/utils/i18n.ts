@@ -17,6 +17,7 @@ export const UI_TRANSLATIONS = {
     },
     nav: {
       home: 'Acasă',
+      menu: 'Meniu',
       lifeEvents: 'Etape de Viață',
       catalog: 'Catalog Proceduri',
       offices: 'Găsește un ghișeu',
@@ -219,6 +220,7 @@ export const UI_TRANSLATIONS = {
     },
     nav: {
       home: 'Home',
+      menu: 'Menu',
       lifeEvents: 'Life Events',
       catalog: 'Procedure Catalog',
       offices: 'Find an Office',

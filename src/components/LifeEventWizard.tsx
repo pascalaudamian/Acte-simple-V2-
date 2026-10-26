@@ -261,7 +261,7 @@ export const LifeEventWizard: React.FC<LifeEventWizardProps> = ({
               <span>
                 {lang === 'ro' ? 'Domenii administrative asociate:' : 'Related administrative domains:'}
               </span>
-              {activeLifeEvent.recommendedDomains.map((domId) => {
+              {activeLifeEvent.recommendedDomains.map((domId: string) => {
                 const dom = ADMINISTRATIVE_DOMAINS.find((d) => d.id === domId);
                 return (
                   <span

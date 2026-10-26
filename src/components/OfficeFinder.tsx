@@ -201,11 +201,8 @@ export const OfficeFinder: React.FC<OfficeFinderProps> = ({
 
   // Generate directions links
   const directionsLinks = useMemo(() => {
-    if (!activeOffice?.coordinates) return null;
+    if (!activeOffice) return null;
     const { lat, lng } = activeOffice.coordinates;
-    if (typeof lat !== 'number' || typeof lng !== 'number' || !Number.isFinite(lat) || !Number.isFinite(lng)) {
-      return null;
-    }
     const label = encodeURIComponent(lang === 'en' ? activeOffice.name.en : activeOffice.name.ro);
     return {
       google: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
