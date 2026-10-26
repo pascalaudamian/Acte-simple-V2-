@@ -24,6 +24,15 @@
 .theme-civic .text-white { color: var(--civic-ink) !important; }
 .theme-civic .text-slate-300 { color: var(--civic-muted) !important; }
 .theme-civic .text-slate-400 { color: #74839b !important; }
+.theme-civic .text-slate-100,
+.theme-civic .text-slate-200 { color: #29456f !important; }
+.theme-civic .text-slate-500 { color: #60708b !important; }
+.theme-civic .bg-slate-800 { background-color: #e8eef7 !important; }
+.theme-civic .bg-slate-700 { background-color: #dce6f3 !important; }
+.theme-civic .hover\:bg-slate-800:hover { background-color: #dce6f3 !important; }
+.theme-civic .hover\:text-white:hover { color: #16325c !important; }
+.theme-civic input::placeholder,
+.theme-civic textarea::placeholder { color: #71819a !important; opacity: 1; }
 .theme-civic .border-slate-800,
 .theme-civic .border-slate-700 { border-color: var(--civic-border) !important; }
 .theme-civic .bg-indigo-900\/90 { background-color: #2146d0 !important; color: white !important; }
