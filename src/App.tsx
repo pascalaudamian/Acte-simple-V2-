@@ -7,6 +7,10 @@ import { MobileNav } from './components/MobileNav';
 import { ProcedureCard } from './components/ProcedureCard';
 import { ProcedureDetail } from './components/ProcedureDetail';
 import { OrientationWizard } from './components/OrientationWizard';
+import { LifeEventWizard } from './components/LifeEventWizard';
+import { EditorialWorkflow } from './components/EditorialWorkflow';
+import { AuditDashboard } from './components/AuditDashboard';
+import { SEOHead } from './components/SEOHead';
 import { DocumentPrep } from './components/DocumentPrep';
 import { ChecklistManager } from './components/ChecklistManager';
 import { SourceMonitor } from './components/SourceMonitor';
@@ -50,13 +54,36 @@ export default function App() {
     return 'ro';
   });
 
-  // 2. Navigation & View State
-  const [activeTab, setActiveTab] = useState<string>('home');
+  // 2. Navigation & View State with URL parameter hydration
+  const [selectedProcedureId, setSelectedProcedureId] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const procParam = urlParams.get('procedure');
+      if (procParam && PROCEDURES.some((p) => p.id === procParam || p.slug === procParam)) {
+        return procParam;
+      }
+    }
+    return null;
+  });
+
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const procParam = urlParams.get('procedure');
+      if (procParam && PROCEDURES.some((p) => p.id === procParam || p.slug === procParam)) {
+        return 'detail';
+      }
+      const tabParam = urlParams.get('tab');
+      if (tabParam) return tabParam;
+    }
+    return 'home';
+  });
+
   const [theme, setTheme] = useState<'default' | 'civic'>(() => {
     if (typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY_THEME) === 'civic') return 'civic';
     return 'default';
   });
-  const [selectedProcedureId, setSelectedProcedureId] = useState<string | null>(null);
+
   const [officeFinderServiceId, setOfficeFinderServiceId] = useState<string | undefined>(undefined);
 
   // 3. Search & Filter State
@@ -80,7 +107,7 @@ export default function App() {
     return {};
   });
 
-  // Sync language change
+  // Sync language change with URL
   const handleToggleTheme = () => {
     setTheme((current) => {
       const next = current === 'default' ? 'civic' : 'default';
@@ -106,6 +133,31 @@ export default function App() {
     }
   }, [checklists]);
 
+  // Handle browser back/forward buttons (popstate)
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab') || 'home';
+      const procParam = urlParams.get('procedure');
+      const langParam = urlParams.get('lang');
+
+      if (langParam === 'ro' || langParam === 'en') {
+        setLang(langParam);
+      }
+
+      if (procParam && PROCEDURES.some((p) => p.id === procParam || p.slug === procParam)) {
+        setSelectedProcedureId(procParam);
+        setActiveTab('detail');
+      } else {
+        setSelectedProcedureId(null);
+        setActiveTab(tabParam);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   // Online / Offline listeners for Android & PWA
   useEffect(() => {
     setIsOnline(navigator.onLine);
@@ -122,15 +174,25 @@ export default function App() {
 
   const t = UI_TRANSLATIONS[lang];
 
-  // Navigation handler
+  // Navigation handler with URL pushState
   const handleNavigate = (tab: string, procedureId?: string) => {
+    const url = new URL(window.location.href);
     if (procedureId) {
       setSelectedProcedureId(procedureId);
       setActiveTab('detail');
+      url.searchParams.set('tab', 'detail');
+      url.searchParams.set('procedure', procedureId);
     } else {
       setSelectedProcedureId(null);
       setActiveTab(tab);
+      url.searchParams.delete('procedure');
+      if (tab === 'home') {
+        url.searchParams.delete('tab');
+      } else {
+        url.searchParams.set('tab', tab);
+      }
     }
+    window.history.pushState({}, '', url.toString());
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -312,6 +374,9 @@ export default function App() {
 
   return (
     <div className={`min-h-screen flex flex-col bg-slate-50 text-slate-900 ${theme === 'civic' ? 'theme-civic' : ''}`}>
+      {/* Dynamic SEO, Meta tags & Schema.org JSON-LD */}
+      <SEOHead lang={lang} activeTab={activeTab} procedure={currentProcedure} />
+
       {/* Offline Alert Banner */}
       {!isOnline && (
         <div className="bg-amber-600 text-white text-xs py-2 px-4 text-center font-medium flex items-center justify-center gap-2">
@@ -741,6 +806,34 @@ export default function App() {
             onSetReminder={handleSetReminder}
             onClearAllData={handleClearAllData}
           />
+        )}
+
+        {/* VIEW: LIFE-EVENTS ADMINISTRATIVE ORIENTATION WIZARD */}
+        {(activeTab === 'lifeEvents' || activeTab === 'wizard') && (
+          <LifeEventWizard
+            lang={lang}
+            procedures={PROCEDURES}
+            onSelectProcedure={(id) => handleNavigate('detail', id)}
+            onFindOfficeForProcedure={(procId, countyCode) => {
+              handleFindOfficeForProcedure(procId);
+            }}
+            savedProcedureIds={Object.keys(checklists)}
+            onToggleSave={handleToggleSaveProcedure}
+          />
+        )}
+
+        {/* VIEW: EDITORIAL REVIEW & WORKFLOW */}
+        {activeTab === 'editorial' && (
+          <EditorialWorkflow
+            lang={lang}
+            procedures={PROCEDURES}
+            onSelectProcedure={(id) => handleNavigate('detail', id)}
+          />
+        )}
+
+        {/* VIEW: 25-POINT AUDIT & QA COMPLIANCE DASHBOARD */}
+        {activeTab === 'audit' && (
+          <AuditDashboard lang={lang} />
         )}
 
         {/* VIEW 7: SOURCE MONITOR & EDITORIAL REGISTRY */}

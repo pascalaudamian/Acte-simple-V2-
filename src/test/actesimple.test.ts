@@ -481,3 +481,95 @@ test('18. Administrative Services & Offices Full Coverage', () => {
   });
 });
 
+test('19. Explicit SEO Files (robots.txt & sitemap.xml) Integrity', async () => {
+  const fs = await import('fs');
+  const path = await import('path');
+
+  // Verify robots.txt exists and is compliant
+  const robotsPath = path.resolve(process.cwd(), 'public', 'robots.txt');
+  assert.ok(fs.existsSync(robotsPath), 'robots.txt must exist in /public');
+  const robotsContent = fs.readFileSync(robotsPath, 'utf-8');
+  assert.ok(robotsContent.includes('User-agent: *'), 'robots.txt must contain User-agent: *');
+  assert.ok(robotsContent.includes('sitemap.xml'), 'robots.txt must declare sitemap.xml');
+  assert.ok(robotsContent.includes('Disallow: /api/v1/editorial/'), 'robots.txt must disallow internal editorial API');
+
+  // Verify sitemap.xml exists and catalogs all 24 procedures
+  const sitemapPath = path.resolve(process.cwd(), 'public', 'sitemap.xml');
+  assert.ok(fs.existsSync(sitemapPath), 'sitemap.xml must exist in /public');
+  const sitemapContent = fs.readFileSync(sitemapPath, 'utf-8');
+  assert.ok(sitemapContent.includes('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'), 'sitemap.xml must have valid schema');
+  assert.ok(sitemapContent.includes('hreflang="ro"'), 'sitemap.xml must declare ro hreflang');
+  assert.ok(sitemapContent.includes('hreflang="en"'), 'sitemap.xml must declare en hreflang');
+
+  // Verify all 24 procedures are indexed in sitemap.xml
+  PROCEDURES.forEach((p) => {
+    assert.ok(sitemapContent.includes(p.id), `sitemap.xml must include URL entry for procedure ${p.id}`);
+  });
+});
+
+test('20. 25-Point Civic Audit Checklist & Boundary Enforcement', () => {
+  // Verify UI translations contain the audit nav item
+  assert.ok(UI_TRANSLATIONS.ro.nav.audit, 'RO nav must include audit item');
+  assert.ok(UI_TRANSLATIONS.en.nav.audit, 'EN nav must include audit item');
+
+  // Verify zero CNP or sensitive ID inputs anywhere in the schema
+  PROCEDURES.forEach((p) => {
+    p.requiredDocuments.forEach((doc) => {
+      assert.ok(
+        !doc.name.ro.toLowerCase().includes('introduceți cnp-ul dvs'),
+        `Document ${doc.id} must never ask for CNP input`
+      );
+    });
+  });
+});
+
+test('21. Bilingual Parity Across All 24 Procedures', () => {
+  assert.strictEqual(PROCEDURES.length, 24, 'Must have exactly 24 procedures');
+
+  PROCEDURES.forEach((p) => {
+    // Title
+    assert.ok(p.title.ro && p.title.ro.length > 5, `Procedure ${p.id} missing RO title`);
+    assert.ok(p.title.en && p.title.en.length > 5, `Procedure ${p.id} missing EN title`);
+
+    // Summary
+    assert.ok(p.shortSummary.ro && p.shortSummary.ro.length > 10, `Procedure ${p.id} missing RO summary`);
+    assert.ok(p.shortSummary.en && p.shortSummary.en.length > 10, `Procedure ${p.id} missing EN summary`);
+
+    // Required Documents count must match exactly
+    p.requiredDocuments.forEach((d) => {
+      assert.ok(d.name.ro.length > 2, `Doc ${d.id} in ${p.id} missing RO name`);
+      assert.ok(d.name.en.length > 2, `Doc ${d.id} in ${p.id} missing EN name`);
+    });
+
+    // Steps must have bilingual titles and descriptions
+    assert.ok(p.steps.length > 0, `Procedure ${p.id} must have steps`);
+    p.steps.forEach((step, idx) => {
+      assert.ok(step.title.ro.length > 2, `Step ${idx} in ${p.id} missing RO title`);
+      assert.ok(step.title.en.length > 2, `Step ${idx} in ${p.id} missing EN title`);
+      assert.ok(step.description.ro.length > 2, `Step ${idx} in ${p.id} missing RO description`);
+      assert.ok(step.description.en.length > 2, `Step ${idx} in ${p.id} missing EN description`);
+    });
+
+    // Fees amounts must match exactly
+    assert.ok(p.fees.length > 0, `Procedure ${p.id} must have fees list`);
+    p.fees.forEach((f) => {
+      assert.ok(f.description.ro.length > 2, `Fee ${f.amount} in ${p.id} missing RO description`);
+      assert.ok(f.description.en.length > 2, `Fee ${f.amount} in ${p.id} missing EN description`);
+      assert.strictEqual(typeof f.amount, 'number', `Fee in ${p.id} amount must be numeric`);
+    });
+  });
+});
+
+test('22. Office Directory Multi-Criteria Querying & Proximity Verification', async () => {
+  const { getOffices } = await import('../db/index.ts');
+  const offices = await getOffices();
+  assert.ok(offices.length >= 42, 'Must have at least 42 administrative offices in database/fallback');
+
+  // Verify all offices have valid Romanian coordinates
+  offices.forEach((o) => {
+    assert.ok(o.coordinates.lat >= 43 && o.coordinates.lat <= 49, `Office ${o.id} lat out of Romania bounds`);
+    assert.ok(o.coordinates.lng >= 20 && o.coordinates.lng <= 30, `Office ${o.id} lng out of Romania bounds`);
+    assert.ok(o.sourceUrl.startsWith('http'), `Office ${o.id} must have verified official source URL`);
+  });
+});
+

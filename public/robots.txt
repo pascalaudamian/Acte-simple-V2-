@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/v1/editorial/
+
+Sitemap: https://actesimple.ro/sitemap.xml

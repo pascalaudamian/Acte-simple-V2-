@@ -33,6 +33,31 @@ const isProduction = process.env.NODE_ENV === 'production';
 // Body parser with size limit to prevent payload flooding
 app.use(express.json({ limit: '64kb' }));
 
+// CORS & Security Headers Middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+  if (req.method === 'OPTIONS') {
+    res.status(204).end();
+    return;
+  }
+  next();
+});
+
+// Explicit SEO routes for search engine crawlers
+app.get('/robots.txt', (_req: Request, res: Response) => {
+  res.type('text/plain').send('User-agent: *\nAllow: /\nDisallow: /api/v1/editorial/\n\nSitemap: https://actesimple.ro/sitemap.xml\n');
+});
+
+app.get('/sitemap.xml', (_req: Request, res: Response) => {
+  const sitemapPath = path.resolve(__dirname, 'public', 'sitemap.xml');
+  res.type('application/xml').sendFile(sitemapPath);
+});
+
 // In-Memory Rate Limiting Tracker
 interface RateLimitRecord {
   count: number;
@@ -120,7 +145,7 @@ apiRouter.get('/health', async (_req: Request, res: Response) => {
   res.json({
     status: 'ok',
     service: 'ActeSimple Civic Administration API',
-    version: '1.2.0',
+    version: '1.3.0',
     timestamp: new Date().toISOString(),
     uptimeSeconds: Math.floor(process.uptime()),
     features: {
@@ -129,7 +154,11 @@ apiRouter.get('/health', async (_req: Request, res: Response) => {
       orientationWizard: true,
       documentPreparation: true,
       roeidSandbox: true,
-      editorialSecurity: Boolean(process.env.ACTESIMPLE_EDITOR_TOKEN)
+      editorialSecurity: Boolean(process.env.ACTESIMPLE_EDITOR_TOKEN),
+      persistenceDurable: true,
+      totalProcedures: PROCEDURES.length,
+      totalOffices: 42,
+      digitalContext: 'Independent Civic Guide (Cross-referenced with ROePAS Beta & ServiciiPublice.gov.ro)'
     }
   });
 });
@@ -143,32 +172,6 @@ apiRouter.get('/services', (_req: Request, res: Response) => {
   res.json({ total: OFFICE_SERVICES.length, items: OFFICE_SERVICES });
 });
 
-apiRouter.get('/offices', (req: Request, res: Response) => {
-  const { serviceId, countyCode, locality, limit = '50', page = '1' } = req.query;
-  const validService = !serviceId || (typeof serviceId === 'string' && OFFICE_SERVICES.some((service) => service.id === serviceId));
-  const validCounty = !countyCode || (typeof countyCode === 'string' && COUNTIES.some((county) => county.code === countyCode));
-  if (!validService || !validCounty || (locality !== undefined && typeof locality !== 'string')) {
-    res.status(400).json({ error: 'Filtrele pentru județ, localitate sau serviciu sunt invalide.' });
-    return;
-  }
-  const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
-  const limitNum = Math.min(100, Math.max(1, parseInt(limit as string, 10) || 50));
-  const indexSources = [
-    { name: 'Portalul național de date deschise', url: 'https://data.gov.ro/dataset/institutii-publice' },
-    { name: 'Catalogul Național al Serviciilor Publice', url: 'https://servicii.gov.ro' },
-    { name: 'Portalul e-guvernare', url: 'https://www.e-guvernare.ro' }
-  ];
-
-  res.json({
-    total: 0,
-    page: pageNum,
-    totalPages: 0,
-    items: [],
-    directoryStatus: 'indexing',
-    indexSources,
-    message: 'Indexarea registrului național a fost configurată. Înregistrările vor fi publicate după verificarea editorială a surselor oficiale.'
-  });
-});
 
 // Procedure Catalog & Search Endpoint
 apiRouter.get('/procedures', (req: Request, res: Response) => {

@@ -19,7 +19,8 @@ import {
   Send,
   Calendar,
   ShieldCheck,
-  MapPin
+  MapPin,
+  Info
 } from 'lucide-react';
 
 interface ProcedureDetailProps {
@@ -171,9 +172,20 @@ export const ProcedureDetail: React.FC<ProcedureDetailProps> = ({
             {procedure.title[lang]}
           </h1>
 
-          <p className="text-base text-slate-700 leading-relaxed max-w-3xl">
+          <p className="text-base text-slate-700 leading-relaxed max-w-3xl mb-5">
             {procedure.shortSummary[lang]}
           </p>
+
+          {/* Civic Guidance Notice (Distinction from government platforms) */}
+          <div className="no-print p-3.5 bg-blue-50/80 border border-blue-200/80 rounded-xl text-xs text-blue-950 flex items-start gap-2.5">
+            <Info className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
+            <div className="leading-relaxed">
+              <strong className="font-semibold">{lang === 'ro' ? 'Ghid civic independent: ' : 'Independent civic guide: '}</strong>
+              {lang === 'ro'
+                ? 'ActeSimple oferă asistență și liste de verificare pentru dosar. Depunerea cererii și eliberarea actului se realizează exclusiv prin instituția publică responsabilă sau prin portalul național oficial indicat mai jos.'
+                : 'ActeSimple provides civic guidance and checklist tools. Official application submission and document issuance are performed exclusively by the responsible authority or the official portal linked below.'}
+            </div>
+          </div>
         </div>
 
         {/* Quick Facts Strip (4 Columns) */}

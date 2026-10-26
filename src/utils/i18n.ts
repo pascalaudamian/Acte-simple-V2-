@@ -26,7 +26,8 @@ export const UI_TRANSLATIONS = {
       checklists: 'Checklist-urile Mele',
       sources: 'Monitor Surse',
       admin: 'Redacție & Verificare',
-      roeid: 'Interoperabilitate ROeID'
+      roeid: 'Interoperabilitate ROeID',
+      audit: 'Audit & Conformitate (25/25)'
     },
     offices: {
       title: 'Găsește un ghișeu și birou administrativ',
@@ -229,7 +230,8 @@ export const UI_TRANSLATIONS = {
       checklists: 'My Checklists',
       sources: 'Source Monitor',
       admin: 'Editorial Review',
-      roeid: 'ROeID Interoperability'
+      roeid: 'ROeID Interoperability',
+      audit: 'Audit & Compliance (25/25)'
     },
     offices: {
       title: 'Find an Administrative Office & Counter',

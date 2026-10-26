@@ -1066,5 +1066,548 @@
     "sourceUrl": "https://dgpci.mai.gov.ro",
     "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
     "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-stare-civila-s1",
+    "name": {
+      "ro": "Primăria Sector 1 — Serviciul Stare Civilă (Nașteri, Căsătorii)",
+      "en": "Sector 1 City Hall — Civil Status Registry (Births, Marriages)"
+    },
+    "institutionType": "STARE_CIVILA",
+    "county": "B",
+    "city": "București (Sector 1)",
+    "address": "B-dul Banu Manta nr. 9, Sector 1, București",
+    "coordinates": {
+      "lat": 44.4533,
+      "lng": 26.0759
+    },
+    "phone": "021 319 1013",
+    "email": "starecivila@primarias1.ro",
+    "websiteUrl": "https://www.primarias1.ro",
+    "bookingUrl": "https://starecivila.primarias1.ro/programari",
+    "providedServiceIds": [
+      "serv-stare-civila"
+    ],
+    "relatedProcedureIds": [
+      "certificat-nastere-copil",
+      "casatorie-civila",
+      "transcriere-acte-stare-civila-diaspora"
+    ],
+    "openingHours": {
+      "ro": "Luni, Marți, Miercuri: 08:30–16:00; Joi: 08:30–18:00; Vineri: 08:30–13:30",
+      "en": "Mon, Tue, Wed: 08:30–16:00; Thu: 08:30–18:00; Fri: 08:30–13:30"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "recommended",
+    "appointmentNotes": {
+      "ro": "Dosarele de căsătorie se depun cu exact 11–14 zile calendaristice înainte de data oficierii conform legii.",
+      "en": "Marriage declarations must be registered exactly 11 to 14 calendar days prior to ceremony."
+    },
+    "sourceUrl": "https://www.primarias1.ro/stare-civila.html",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-ajpis",
+    "name": {
+      "ro": "Agenția pentru Plăți și Inspecție Socială a Municipiului București (APISMB)",
+      "en": "Bucharest Agency for Social Payments and Inspection (APISMB)"
+    },
+    "institutionType": "ANPIS",
+    "county": "B",
+    "city": "București (Sector 1)",
+    "address": "Str. Ion Câmpineanu nr. 20, Sector 1, București",
+    "coordinates": {
+      "lat": 44.4377,
+      "lng": 26.0964
+    },
+    "phone": "021 314 3650",
+    "email": "apismb@mmanpis.ro",
+    "websiteUrl": "https://bucuresti.mmanpis.ro",
+    "bookingUrl": "https://bucuresti.mmanpis.ro/programari-online/",
+    "providedServiceIds": [
+      "serv-social-anpis"
+    ],
+    "relatedProcedureIds": [
+      "alocatie-stat-copii",
+      "indemnizatie-crestere-copil",
+      "venit-minim-incluziune"
+    ],
+    "openingHours": {
+      "ro": "Luni, Marți, Miercuri, Joi: 08:30–16:30; Vineri: 08:30–14:00",
+      "en": "Mon, Tue, Wed, Thu: 08:30–16:30; Fri: 08:30–14:00"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "walk_in",
+    "appointmentNotes": {
+      "ro": "Cererile pentru alocație și ICC se pot transmite și online prin email sau platforma dedicată a primăriei de domiciliu.",
+      "en": "Applications can also be submitted electronically via municipality online portals."
+    },
+    "sourceUrl": "https://bucuresti.mmanpis.ro/",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-ajofm",
+    "name": {
+      "ro": "Agenția Municipală pentru Ocuparea Forței de Muncă București (AMOFM)",
+      "en": "Bucharest Municipal Employment Agency (AMOFM)"
+    },
+    "institutionType": "ANOFM",
+    "county": "B",
+    "city": "București (Sector 5)",
+    "address": "Str. Spătaru Preda nr. 12, Sector 5, București",
+    "coordinates": {
+      "lat": 44.4172,
+      "lng": 26.0841
+    },
+    "phone": "021 316 5508",
+    "email": "bucuresti@anofm.gov.ro",
+    "websiteUrl": "https://www.anofm.ro/bucuresti/",
+    "providedServiceIds": [
+      "serv-somaj-anofm"
+    ],
+    "relatedProcedureIds": [
+      "indemnizatie-somaj",
+      "extras-revisal-vechime"
+    ],
+    "openingHours": {
+      "ro": "Luni – Joi: 08:30–16:30; Vineri: 08:30–13:30",
+      "en": "Monday – Thursday: 08:30–16:30; Friday: 08:30–13:30"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "walk_in",
+    "sourceUrl": "https://www.anofm.ro/bucuresti/",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-cnpp",
+    "name": {
+      "ro": "Casa de Pensii a Municipiului București (CPMB) & CNPP",
+      "en": "Bucharest Pension House (CPMB) & CNPP"
+    },
+    "institutionType": "CNPP",
+    "county": "B",
+    "city": "București (Sector 3)",
+    "address": "Calea Vitan nr. 6, Sector 3, București",
+    "coordinates": {
+      "lat": 44.4239,
+      "lng": 26.1197
+    },
+    "phone": "021 326 0556",
+    "email": "cpmb@cnpp.ro",
+    "websiteUrl": "https://www.cpmb.ro",
+    "bookingUrl": "https://www.cpmb.ro/programare-online",
+    "providedServiceIds": [
+      "serv-pensii-cnpp"
+    ],
+    "relatedProcedureIds": [
+      "pensie-limita-varsta",
+      "pensie-comunitara-internationala"
+    ],
+    "openingHours": {
+      "ro": "Luni, Marți, Miercuri: 08:30–16:30; Joi: 08:30–18:00; Vineri: 08:30–13:30",
+      "en": "Mon, Tue, Wed: 08:30–16:30; Thu: 08:30–18:00; Fri: 08:30–13:30"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "recommended",
+    "appointmentNotes": {
+      "ro": "Pentru pensii internaționale (perioade lucrate în străinătate), adresați-vă Compartimentului Relații Internaționale de la etajul 1.",
+      "en": "For international bilateral pensions, contact International Relations Division on 1st floor."
+    },
+    "sourceUrl": "https://www.cpmb.ro/",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-ancpi-ocpi",
+    "name": {
+      "ro": "Oficiul de Cadastru și Publicitate Imobiliară București (OCPI București)",
+      "en": "Bucharest Cadastre and Land Registration Office (OCPI)"
+    },
+    "institutionType": "ANCPI",
+    "county": "B",
+    "city": "București (Sector 1)",
+    "address": "Splaiul Independenței nr. 202A, Sector 6, București",
+    "coordinates": {
+      "lat": 44.4372,
+      "lng": 26.0622
+    },
+    "phone": "021 312 9054",
+    "email": "b@ancpi.ro",
+    "websiteUrl": "https://b.ancpi.ro",
+    "providedServiceIds": [
+      "serv-cadastru-ancpi"
+    ],
+    "relatedProcedureIds": [
+      "extras-carte-funciara-online",
+      "certificat-urbanism"
+    ],
+    "openingHours": {
+      "ro": "Luni – Joi: 08:30–16:00; Vineri: 08:30–13:30",
+      "en": "Monday – Thursday: 08:30–16:00; Friday: 08:30–13:30"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "walk_in",
+    "appointmentNotes": {
+      "ro": "Extrasele de informare de carte funciară pot fi eliberate instant online 24/7 prin portalul epay.ancpi.ro, fără vizită la sediu.",
+      "en": "Land book extracts for information can be issued online 24/7 on epay.ancpi.ro without office visit."
+    },
+    "sourceUrl": "https://b.ancpi.ro/",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-onrc",
+    "name": {
+      "ro": "Oficiul Registrului Comerțului de pe lângă Tribunalul București (ORCTB)",
+      "en": "Trade Register Office for Bucharest Tribunal (ORCTB)"
+    },
+    "institutionType": "ONRC",
+    "county": "B",
+    "city": "București (Sector 3)",
+    "address": "Intrarea Sectorului nr. 1, Sector 3, București",
+    "coordinates": {
+      "lat": 44.4312,
+      "lng": 26.1147
+    },
+    "phone": "021 316 0804",
+    "email": "tb@onrc.ro",
+    "websiteUrl": "https://www.onrc.ro",
+    "bookingUrl": "https://myportal.onrc.ro",
+    "providedServiceIds": [
+      "serv-onrc-firme"
+    ],
+    "relatedProcedureIds": [
+      "infiintare-srl-onrc",
+      "infiintare-pfa-onrc"
+    ],
+    "openingHours": {
+      "ro": "Luni – Joi: 08:30–16:30; Vineri: 08:30–14:00",
+      "en": "Monday – Thursday: 08:30–16:30; Friday: 08:30–14:00"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "recommended",
+    "appointmentNotes": {
+      "ro": "Depunerea cererilor este recomandată online prin noul portal myportal.onrc.ro utilizând semnătură electronică calificată.",
+      "en": "Online submission is highly recommended via myportal.onrc.ro with qualified electronic signature."
+    },
+    "sourceUrl": "https://www.onrc.ro/index.php/ro/orct/bucuresti",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-prefectura-apostila",
+    "name": {
+      "ro": "Instituția Prefectului Municipiului București — Biroul Apostilă Haga",
+      "en": "Bucharest Prefecture — Hague Apostille Desk"
+    },
+    "institutionType": "PREFECTURA_APOSTILA",
+    "county": "B",
+    "city": "București (Sector 1)",
+    "address": "Piața Presei Libere nr. 1, Corp B, Et. 3, Sector 1, București",
+    "coordinates": {
+      "lat": 44.4801,
+      "lng": 26.0712
+    },
+    "phone": "021 311 9639",
+    "email": "apostila@prefecturabucuresti.ro",
+    "websiteUrl": "https://prefecturabucuresti.mai.gov.ro",
+    "providedServiceIds": [
+      "serv-apostila-prefectura"
+    ],
+    "relatedProcedureIds": [
+      "apostila-haga-prefectura"
+    ],
+    "openingHours": {
+      "ro": "Luni, Marți, Miercuri, Joi: 09:00–15:00; Vineri: 09:00–12:30",
+      "en": "Mon, Tue, Wed, Thu: 09:00–15:00; Fri: 09:00–12:30"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "walk_in",
+    "appointmentNotes": {
+      "ro": "Eliberarea apostilei pentru actele administrative se face gratuit, pe loc sau în termen de maximum 24 de ore lucrătoare.",
+      "en": "Apostille issuance on administrative acts is free of charge and processed within 24 business hours."
+    },
+    "sourceUrl": "https://prefecturabucuresti.mai.gov.ro/apostila/",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-anc-cetatenie",
+    "name": {
+      "ro": "Autoritatea Națională pentru Cetățenie (ANC) — Sediul Central",
+      "en": "National Citizenship Authority (ANC) — Central Headquarters"
+    },
+    "institutionType": "ALTELE",
+    "county": "B",
+    "city": "București (Sector 3)",
+    "address": "Str. Smârdan nr. 3, Sector 3, București",
+    "coordinates": {
+      "lat": 44.4318,
+      "lng": 26.1011
+    },
+    "phone": "021 315 3575",
+    "email": "cetatenie@just.ro",
+    "websiteUrl": "https://cetatenie.just.ro",
+    "bookingUrl": "https://cetatenie.just.ro/programare-online/",
+    "providedServiceIds": [
+      "serv-cetatenie-anc"
+    ],
+    "relatedProcedureIds": [
+      "redobandire-cetatenie-romana",
+      "viza-lunga-sedere-romania"
+    ],
+    "openingHours": {
+      "ro": "Luni – Joi: 08:30–16:00; Vineri: 08:30–13:00",
+      "en": "Monday – Thursday: 08:30–16:00; Friday: 08:30–13:00"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "mandatory",
+    "appointmentNotes": {
+      "ro": "Depunerea dosarelor de cetățenie (Art. 11 Legea 21/1991) se face exclusiv pe baza programării online prealabile.",
+      "en": "Submitting citizenship restoration files requires mandatory pre-scheduled online appointment."
+    },
+    "sourceUrl": "https://cetatenie.just.ro/",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-cj-cjp",
+    "name": {
+      "ro": "Casa Județeană de Pensii Cluj (CJP Cluj)",
+      "en": "Cluj County Pension House (CJP Cluj)"
+    },
+    "institutionType": "CNPP",
+    "county": "CJ",
+    "city": "Cluj-Napoca",
+    "address": "Str. George Coșbuc nr. 2, Cluj-Napoca, jud. Cluj",
+    "coordinates": {
+      "lat": 46.7661,
+      "lng": 23.5794
+    },
+    "phone": "0264 431 010",
+    "email": "pensii.cluj@cnpp.ro",
+    "websiteUrl": "https://pensiicluj.ro",
+    "providedServiceIds": [
+      "serv-pensii-cnpp",
+      "serv-social-anpis"
+    ],
+    "relatedProcedureIds": [
+      "pensie-limita-varsta",
+      "pensie-comunitara-internationala",
+      "alocatie-stat-copii"
+    ],
+    "openingHours": {
+      "ro": "Luni, Marți, Miercuri: 08:30–16:30; Joi: 08:30–18:00; Vineri: 08:30–14:00",
+      "en": "Mon, Tue, Wed: 08:30–16:30; Thu: 08:30–18:00; Fri: 08:30–14:00"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "recommended",
+    "sourceUrl": "https://pensiicluj.ro/",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-cj-onrc",
+    "name": {
+      "ro": "Oficiul Registrului Comerțului de pe lângă Tribunalul Cluj (ORC Cluj)",
+      "en": "Trade Register Office for Cluj Tribunal (ORC Cluj)"
+    },
+    "institutionType": "ONRC",
+    "county": "CJ",
+    "city": "Cluj-Napoca",
+    "address": "Str. Nicolae Cristea nr. 28, Cluj-Napoca, jud. Cluj",
+    "coordinates": {
+      "lat": 46.7725,
+      "lng": 23.5962
+    },
+    "phone": "0264 432 602",
+    "email": "orccj@onrc.ro",
+    "websiteUrl": "https://www.onrc.ro",
+    "bookingUrl": "https://myportal.onrc.ro",
+    "providedServiceIds": [
+      "serv-onrc-firme"
+    ],
+    "relatedProcedureIds": [
+      "infiintare-srl-onrc",
+      "infiintare-pfa-onrc"
+    ],
+    "openingHours": {
+      "ro": "Luni – Joi: 08:30–16:30; Vineri: 08:30–14:00",
+      "en": "Monday – Thursday: 08:30–16:30; Friday: 08:30–14:00"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "recommended",
+    "sourceUrl": "https://www.onrc.ro",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-tm-cjp",
+    "name": {
+      "ro": "Casa Județeană de Pensii Timiș (CJP Timiș)",
+      "en": "Timiș County Pension House (CJP Timiș)"
+    },
+    "institutionType": "CNPP",
+    "county": "TM",
+    "city": "Timișoara",
+    "address": "Str. Andrei Șaguna nr. 5A, Timișoara, jud. Timiș",
+    "coordinates": {
+      "lat": 45.7562,
+      "lng": 21.2405
+    },
+    "phone": "0256 308 050",
+    "email": "pensii.timis@cnpp.ro",
+    "websiteUrl": "https://pensiitimis.ro",
+    "providedServiceIds": [
+      "serv-pensii-cnpp"
+    ],
+    "relatedProcedureIds": [
+      "pensie-limita-varsta",
+      "pensie-comunitara-internationala"
+    ],
+    "openingHours": {
+      "ro": "Luni – Joi: 08:30–16:30; Vineri: 08:30–13:30",
+      "en": "Monday – Thursday: 08:30–16:30; Friday: 08:30–13:30"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "recommended",
+    "sourceUrl": "https://pensiitimis.ro/",
+    "lastVerifiedTimestamp": "2026-03-22T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-cnred",
+    "name": {
+      "ro": "Centrul Național de Recunoaștere și Echivalare a Diplomelor (CNRED / MEC)",
+      "en": "National Centre for Recognition and Equivalence of Diplomas (CNRED / MEC)"
+    },
+    "institutionType": "ALTELE",
+    "county": "B",
+    "city": "București Sector 1",
+    "address": "Str. Spiru Haret nr. 12, Sector 1, București",
+    "coordinates": {
+      "lat": 44.4398,
+      "lng": 26.0911
+    },
+    "phone": "021 405 6200",
+    "email": "cnred@edu.gov.ro",
+    "websiteUrl": "https://cnred.edu.ro",
+    "bookingUrl": "https://cnred.edu.ro/ro/contact",
+    "providedServiceIds": [
+      "serv-educatie-cnred"
+    ],
+    "relatedProcedureIds": [
+      "echivalare-diplome-cnred",
+      "inscriere-invatamant-primar"
+    ],
+    "openingHours": {
+      "ro": "Luni, Miercuri: 09:00–12:00; Marți, Joi: 13:00–16:00 (Depunere electronică 24/7)",
+      "en": "Monday, Wednesday: 09:00–12:00; Tuesday, Thursday: 13:00–16:00 (Online portal 24/7)"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "hybrid",
+    "sourceUrl": "https://cnred.edu.ro",
+    "lastVerifiedTimestamp": "2026-03-24T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-b-apia",
+    "name": {
+      "ro": "Centrul Județean APIA București-Ilfov",
+      "en": "County Center APIA Bucharest-Ilfov"
+    },
+    "institutionType": "ALTELE",
+    "county": "B",
+    "city": "București Sector 2",
+    "address": "B-dul Carol I nr. 17, Sector 2, București",
+    "coordinates": {
+      "lat": 44.4363,
+      "lng": 26.1105
+    },
+    "phone": "021 305 4800",
+    "email": "secretariat@apia.org.ro",
+    "websiteUrl": "https://www.apia.org.ro",
+    "bookingUrl": "https://lpis.apia.org.ro",
+    "providedServiceIds": [
+      "serv-agricultura-apia"
+    ],
+    "relatedProcedureIds": [
+      "subventii-apia-fermier",
+      "inregistrare-animale-ansvsa"
+    ],
+    "openingHours": {
+      "ro": "Luni – Joi: 08:30–17:00; Vineri: 08:30–14:30",
+      "en": "Monday – Thursday: 08:30–17:00; Friday: 08:30–14:30"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "hybrid",
+    "sourceUrl": "https://www.apia.org.ro",
+    "lastVerifiedTimestamp": "2026-03-24T10:00:00Z",
+    "verificationStatus": "verified"
+  },
+  {
+    "id": "off-cj-apia",
+    "name": {
+      "ro": "Centrul Județean APIA Cluj",
+      "en": "APIA County Center Cluj"
+    },
+    "institutionType": "ALTELE",
+    "county": "CJ",
+    "city": "Cluj-Napoca",
+    "address": "Str. Fagului nr. 2, Cluj-Napoca, jud. Cluj",
+    "coordinates": {
+      "lat": 46.7582,
+      "lng": 23.6042
+    },
+    "phone": "0264 445 081",
+    "email": "apia.cluj@apia.org.ro",
+    "websiteUrl": "https://www.apia.org.ro",
+    "providedServiceIds": [
+      "serv-agricultura-apia"
+    ],
+    "relatedProcedureIds": [
+      "subventii-apia-fermier",
+      "inregistrare-animale-ansvsa"
+    ],
+    "openingHours": {
+      "ro": "Luni – Joi: 08:00–16:30; Vineri: 08:00–14:00",
+      "en": "Monday – Thursday: 08:00–16:30; Friday: 08:00–14:00"
+    },
+    "accessibility": {
+      "wheelchairAccessible": true
+    },
+    "appointmentRequirement": "hybrid",
+    "sourceUrl": "https://www.apia.org.ro",
+    "lastVerifiedTimestamp": "2026-03-24T10:00:00Z",
+    "verificationStatus": "verified"
   }
 ]

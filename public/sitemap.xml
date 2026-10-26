@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Core Views -->
+  <url>
+    <loc>https://actesimple.ro/?lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?lang=en" />
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=catalog&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=catalog&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=catalog&amp;lang=en" />
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=wizard&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=wizard&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=wizard&amp;lang=en" />
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=offices&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=offices&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=offices&amp;lang=en" />
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=forms&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=forms&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=forms&amp;lang=en" />
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 24 Verified Administrative Procedures -->
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=buletin-14-ani&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=buletin-14-ani&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=buletin-14-ani&amp;lang=en" />
+    <lastmod>2026-03-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=buletin-schimbare&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=buletin-schimbare&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=buletin-schimbare&amp;lang=en" />
+    <lastmod>2026-03-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=pasaport-electronic&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=pasaport-electronic&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=pasaport-electronic&amp;lang=en" />
+    <lastmod>2026-03-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=cazier-judiciar&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=cazier-judiciar&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=cazier-judiciar&amp;lang=en" />
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=permis-conducere-schimbare&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=permis-conducere-schimbare&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=permis-conducere-schimbare&amp;lang=en" />
+    <lastmod>2026-03-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=rezidenta-ue&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=rezidenta-ue&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=rezidenta-ue&amp;lang=en" />
+    <lastmod>2026-03-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=permis-sedere-non-ue-munca&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=permis-sedere-non-ue-munca&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=permis-sedere-non-ue-munca&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=inmatriculare-auto&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=inmatriculare-auto&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=inmatriculare-auto&amp;lang=en" />
+    <lastmod>2026-03-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=nif-nerezidenti&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=nif-nerezidenti&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=nif-nerezidenti&amp;lang=en" />
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=card-sanatate-cnas&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=card-sanatate-cnas&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=card-sanatate-cnas&amp;lang=en" />
+    <lastmod>2026-03-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=certificat-nastere-copil&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=certificat-nastere-copil&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=certificat-nastere-copil&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=casatorie-civila&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=casatorie-civila&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=casatorie-civila&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=transcriere-acte-stare-civila-diaspora&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=transcriere-acte-stare-civila-diaspora&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=transcriere-acte-stare-civila-diaspora&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=alocatie-stat-copii&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=alocatie-stat-copii&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=alocatie-stat-copii&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=indemnizatie-crestere-copil&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=indemnizatie-crestere-copil&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=indemnizatie-crestere-copil&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=indemnizatie-somaj&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=indemnizatie-somaj&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=indemnizatie-somaj&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=pensie-limita-varsta&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=pensie-limita-varsta&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=pensie-limita-varsta&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=pensie-comunitara-internationala&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=pensie-comunitara-internationala&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=pensie-comunitara-internationala&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=echivalare-diplome-cnred&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=echivalare-diplome-cnred&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=echivalare-diplome-cnred&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=extras-carte-funciara-online&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=extras-carte-funciara-online&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=extras-carte-funciara-online&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=apostila-haga-prefectura&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=apostila-haga-prefectura&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=apostila-haga-prefectura&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=infiintare-srl-onrc&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=infiintare-srl-onrc&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=infiintare-srl-onrc&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=subventii-apia-fermier&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=subventii-apia-fermier&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=subventii-apia-fermier&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://actesimple.ro/?tab=detail&amp;procedure=redobandire-cetatenie-romana&amp;lang=ro</loc>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://actesimple.ro/?tab=detail&amp;procedure=redobandire-cetatenie-romana&amp;lang=ro" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://actesimple.ro/?tab=detail&amp;procedure=redobandire-cetatenie-romana&amp;lang=en" />
+    <lastmod>2026-03-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

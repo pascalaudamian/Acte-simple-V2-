@@ -25,7 +25,8 @@ import {
   Map as MapIcon,
   List as ListIcon,
   Compass,
-  Building
+  Building,
+  Info
 } from 'lucide-react';
 
 interface OfficeFinderProps {
@@ -233,6 +234,17 @@ export const OfficeFinder: React.FC<OfficeFinderProps> = ({
         <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
           {t.offices.subtitle}
         </p>
+
+        {/* Coverage Transparency Notice */}
+        <div className="mt-4 p-3.5 bg-amber-50 border border-amber-200/90 rounded-xl text-xs text-amber-900 flex items-start gap-3">
+          <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+          <div className="leading-relaxed">
+            <strong className="font-semibold">{lang === 'ro' ? 'Notă privind acoperirea teritorială: ' : 'Territorial coverage notice: '}</strong>
+            {lang === 'ro'
+              ? 'Catalogul include sediile administrative județene principale (SPCLEP, Servicii Pașapoarte, Permise & Înmatriculări, IGI, Cazier Judiciar, CNRED, APIA) din municipiile reședință de județ și București. Pentru ghișee comunale secundare sau primării locale, vă rugăm să verificați portalul primăriei sau prefecturii locale indicate în fișă.'
+              : 'This directory catalogs the primary county headquarters (SPCLEP, Passports, Driving Licenses, IGI, Police Records, CNRED, APIA) in county capitals and Bucharest. For secondary commune counters or local town halls, please consult the local prefecture or municipality portal referenced in each entry.'}
+          </div>
+        </div>
       </div>
 
       {/* Filter Ribbon & Guided Flow */}

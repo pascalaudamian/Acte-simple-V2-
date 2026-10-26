@@ -227,7 +227,7 @@ export async function initDb(): Promise<{ mode: 'postgres' | 'file'; connected: 
     }
   }
 
-  // File fallback seed initialization
+  // File fallback seed initialization & catalog synchronization
   if (!fs.existsSync(SOURCES_FILE)) {
     writeJsonFile(SOURCES_FILE, OFFICIAL_SOURCES);
   }
@@ -237,8 +237,21 @@ export async function initDb(): Promise<{ mode: 'postgres' | 'file'; connected: 
   if (!fs.existsSync(FEEDBACK_FILE)) {
     writeJsonFile(FEEDBACK_FILE, []);
   }
-  if (!fs.existsSync(OFFICES_FILE)) {
-    writeJsonFile(OFFICES_FILE, ADMINISTRATIVE_OFFICES);
+
+  const existingOffices = fs.existsSync(OFFICES_FILE)
+    ? readJsonFile<AdministrativeOffice[]>(OFFICES_FILE, ADMINISTRATIVE_OFFICES)
+    : [];
+  const officeIdSet = new Set(existingOffices.map((o) => o.id));
+  let officesUpdated = false;
+  for (const off of ADMINISTRATIVE_OFFICES) {
+    if (!officeIdSet.has(off.id)) {
+      existingOffices.push(off);
+      officeIdSet.add(off.id);
+      officesUpdated = true;
+    }
+  }
+  if (officesUpdated || !fs.existsSync(OFFICES_FILE)) {
+    writeJsonFile(OFFICES_FILE, existingOffices);
   }
 
   return { mode: 'file', connected: false };
@@ -433,6 +446,16 @@ export async function getOffices(filter?: {
   }
 
   let list = readJsonFile<AdministrativeOffice[]>(OFFICES_FILE, ADMINISTRATIVE_OFFICES);
+  if (list.length < ADMINISTRATIVE_OFFICES.length) {
+    const existingIdSet = new Set(list.map((o) => o.id));
+    for (const off of ADMINISTRATIVE_OFFICES) {
+      if (!existingIdSet.has(off.id)) {
+        list.push(off);
+        existingIdSet.add(off.id);
+      }
+    }
+    writeJsonFile(OFFICES_FILE, list);
+  }
 
   if (filter?.county && filter.county !== 'all') {
     list = list.filter((o) => o.county.toUpperCase() === filter.county?.toUpperCase());

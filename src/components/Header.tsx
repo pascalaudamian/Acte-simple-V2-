@@ -75,7 +75,8 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'checklists', label: t.nav.checklists, count: savedCount, icon: BookmarkCheck },
     { id: 'editorial', label: t.nav.admin, icon: ShieldCheck },
     { id: 'sources', label: t.nav.sources, icon: Activity },
-    { id: 'roeid', label: t.nav.roeid, icon: KeyRound }
+    { id: 'roeid', label: t.nav.roeid, icon: KeyRound },
+    { id: 'audit', label: t.nav.audit, icon: ShieldCheck }
   ];
 
   const isMenuChildActive = activeTab !== 'home';
