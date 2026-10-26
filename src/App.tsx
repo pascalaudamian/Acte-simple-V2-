@@ -32,7 +32,8 @@ import {
   Filter,
   CheckCircle2,
   Clock,
-  MapPin
+  MapPin,
+  Sparkles
 } from 'lucide-react';
 
 const STORAGE_KEY_LANG = 'actesimple_lang';
@@ -441,10 +442,16 @@ export default function App() {
                     </button>
                   ))}
                 </div>
+
+                <div className="mt-7 pt-5 border-t border-white/10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] text-slate-300">
+                  <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Checklist interactiv salvat pe telefon</span>
+                  <span className="inline-flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-blue-300" /> Tarife oficiale actualizate</span>
+                  <span className="inline-flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-amber-300" /> Gratuit și fără înregistrare</span>
+                </div>
               </div>
             </section>
 
-            {/* Life Events Assistant Hero Banner */}
+            {/* Life Events Assistant Hero Banner */
             <section className="bg-indigo-900/90 text-white border-b border-indigo-800 py-6 px-4 sm:px-6 lg:px-8">
               <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="space-y-1 text-center sm:text-left">
@@ -535,6 +542,26 @@ export default function App() {
                     {lang === 'ro' ? 'Ghiduri pas cu pas organizate pe domenii de interes civic' : 'Step-by-step guides structured by civic domain'}
                   </p>
                 </div>
+              </div>
+
+              <div className="flex gap-2 overflow-x-auto pb-2 mb-5 -mx-1 px-1 scrollbar-thin">
+                {categories.slice(0, 7).map((cat) => {
+                  const Icon = cat.icon;
+                  return (
+                    <button
+                      key={`quick-${cat.id}`}
+                      onClick={() => {
+                        setSelectedCategory(cat.id);
+                        setActiveTab('catalog');
+                      }}
+                      className="shrink-0 inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:border-indigo-300 hover:text-indigo-700 transition-colors"
+                    >
+                      <Icon className="w-3.5 h-3.5 text-slate-400" />
+                      {cat.name[lang].split(' (')[0]}
+                      <span className="text-slate-400">{cat.count}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
