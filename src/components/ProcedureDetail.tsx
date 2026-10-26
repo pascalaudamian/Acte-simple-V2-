@@ -53,6 +53,9 @@ export const ProcedureDetail: React.FC<ProcedureDetailProps> = ({
 
   const checkedDocs = checklistState?.checkedDocumentIds || [];
   const completedSteps = checklistState?.completedStepNumbers || [];
+  const documentProgress = procedure.requiredDocuments.length === 0
+    ? 100
+    : Math.round((checkedDocs.length / procedure.requiredDocuments.length) * 100);
 
   const handlePrint = () => {
     window.print();
@@ -295,9 +298,15 @@ export const ProcedureDetail: React.FC<ProcedureDetailProps> = ({
               <span>02.</span>
               <span>{t.procedure.requiredDocuments}</span>
             </h2>
-            <span className="text-xs text-slate-500">
-              {checkedDocs.length} / {procedure.requiredDocuments.length} {lang === 'ro' ? 'pregătite' : 'prepared'}
-            </span>
+            <div className="w-full sm:w-56">
+              <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
+                <span>{lang === 'ro' ? 'Progres documente' : 'Document progress'}</span>
+                <span className="font-semibold text-slate-700">{checkedDocs.length} / {procedure.requiredDocuments.length}</span>
+              </div>
+              <div className="h-2 rounded-full bg-slate-100 overflow-hidden" role="progressbar" aria-valuenow={documentProgress} aria-valuemin={0} aria-valuemax={100} aria-label={lang === 'ro' ? 'Progres documente' : 'Document progress'}>
+                <div className="h-full rounded-full bg-emerald-500 transition-all duration-300" style={{ width: `${documentProgress}%` }} />
+              </div>
+            </div>
           </div>
 
           <div className="space-y-3">
