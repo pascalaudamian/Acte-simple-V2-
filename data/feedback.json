@@ -1,5 +1,26 @@
 [
   {
+    "id": "test-fb-1793019197963",
+    "procedureId": "buletin-14-ani",
+    "type": "procedure_improvement",
+    "message": "Test persistent feedback entry",
+    "createdAt": "2026-10-26T12:53:17.963Z"
+  },
+  {
+    "id": "test-fb-1793018993416",
+    "procedureId": "buletin-14-ani",
+    "type": "procedure_improvement",
+    "message": "Test persistent feedback entry",
+    "createdAt": "2026-10-26T12:49:53.416Z"
+  },
+  {
+    "id": "test-fb-1793018781927",
+    "procedureId": "buletin-14-ani",
+    "type": "procedure_improvement",
+    "message": "Test persistent feedback entry",
+    "createdAt": "2026-10-26T12:46:21.927Z"
+  },
+  {
     "id": "test-fb-1793004878240",
     "procedureId": "buletin-14-ani",
     "type": "procedure_improvement",

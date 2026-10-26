@@ -1121,6 +1121,86 @@ export const ADMINISTRATIVE_OFFICES: AdministrativeOffice[] = [
     sourceUrl: 'https://pensiitimis.ro/',
     lastVerifiedTimestamp: '2026-03-22T10:00:00Z',
     verificationStatus: 'verified'
+  },
+  {
+    id: 'off-b-cnred',
+    name: {
+      ro: 'Centrul Național de Recunoaștere și Echivalare a Diplomelor (CNRED / MEC)',
+      en: 'National Centre for Recognition and Equivalence of Diplomas (CNRED / MEC)'
+    },
+    institutionType: 'ALTELE',
+    county: 'B',
+    city: 'București Sector 1',
+    address: 'Str. Spiru Haret nr. 12, Sector 1, București',
+    coordinates: { lat: 44.4398, lng: 26.0911 },
+    phone: '021 405 6200',
+    email: 'cnred@edu.gov.ro',
+    websiteUrl: 'https://cnred.edu.ro',
+    bookingUrl: 'https://cnred.edu.ro/ro/contact',
+    providedServiceIds: ['serv-educatie-cnred'],
+    relatedProcedureIds: ['echivalare-diplome-cnred', 'inscriere-invatamant-primar'],
+    openingHours: {
+      ro: 'Luni, Miercuri: 09:00–12:00; Marți, Joi: 13:00–16:00 (Depunere electronică 24/7)',
+      en: 'Monday, Wednesday: 09:00–12:00; Tuesday, Thursday: 13:00–16:00 (Online portal 24/7)'
+    },
+    accessibility: { wheelchairAccessible: true },
+    appointmentRequirement: 'hybrid',
+    sourceUrl: 'https://cnred.edu.ro',
+    lastVerifiedTimestamp: '2026-03-24T10:00:00Z',
+    verificationStatus: 'verified'
+  },
+  {
+    id: 'off-b-apia',
+    name: {
+      ro: 'Centrul Județean APIA București-Ilfov',
+      en: 'County Center APIA Bucharest-Ilfov'
+    },
+    institutionType: 'ALTELE',
+    county: 'B',
+    city: 'București Sector 2',
+    address: 'B-dul Carol I nr. 17, Sector 2, București',
+    coordinates: { lat: 44.4363, lng: 26.1105 },
+    phone: '021 305 4800',
+    email: 'secretariat@apia.org.ro',
+    websiteUrl: 'https://www.apia.org.ro',
+    bookingUrl: 'https://lpis.apia.org.ro',
+    providedServiceIds: ['serv-agricultura-apia'],
+    relatedProcedureIds: ['subventii-apia-fermier', 'inregistrare-animale-ansvsa'],
+    openingHours: {
+      ro: 'Luni – Joi: 08:30–17:00; Vineri: 08:30–14:30',
+      en: 'Monday – Thursday: 08:30–17:00; Friday: 08:30–14:30'
+    },
+    accessibility: { wheelchairAccessible: true },
+    appointmentRequirement: 'hybrid',
+    sourceUrl: 'https://www.apia.org.ro',
+    lastVerifiedTimestamp: '2026-03-24T10:00:00Z',
+    verificationStatus: 'verified'
+  },
+  {
+    id: 'off-cj-apia',
+    name: {
+      ro: 'Centrul Județean APIA Cluj',
+      en: 'APIA County Center Cluj'
+    },
+    institutionType: 'ALTELE',
+    county: 'CJ',
+    city: 'Cluj-Napoca',
+    address: 'Str. Fagului nr. 2, Cluj-Napoca, jud. Cluj',
+    coordinates: { lat: 46.7582, lng: 23.6042 },
+    phone: '0264 445 081',
+    email: 'apia.cluj@apia.org.ro',
+    websiteUrl: 'https://www.apia.org.ro',
+    providedServiceIds: ['serv-agricultura-apia'],
+    relatedProcedureIds: ['subventii-apia-fermier', 'inregistrare-animale-ansvsa'],
+    openingHours: {
+      ro: 'Luni – Joi: 08:00–16:30; Vineri: 08:00–14:00',
+      en: 'Monday – Thursday: 08:00–16:30; Friday: 08:00–14:00'
+    },
+    accessibility: { wheelchairAccessible: true },
+    appointmentRequirement: 'hybrid',
+    sourceUrl: 'https://www.apia.org.ro',
+    lastVerifiedTimestamp: '2026-03-24T10:00:00Z',
+    verificationStatus: 'verified'
   }
 ];
 

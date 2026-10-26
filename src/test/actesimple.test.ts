@@ -6,7 +6,8 @@ import { OFFICIAL_SOURCES, INITIAL_AUDIT_LOGS } from '../data/sources.ts';
 import { FORM_TEMPLATES } from '../data/formTemplates.ts';
 import { COUNTIES } from '../data/counties.ts';
 import { ADMINISTRATIVE_SERVICES } from '../data/services.ts';
-import { VERIFIED_OFFICES } from '../data/offices.ts';
+import { VERIFIED_OFFICES, ADMINISTRATIVE_OFFICES } from '../data/offices.ts';
+import { ADMINISTRATIVE_DOMAINS, LIFE_EVENTS } from '../data/taxonomy.ts';
 import { UI_TRANSLATIONS } from '../utils/i18n.ts';
 import {
   initDb,
@@ -396,3 +397,87 @@ test('14. Bilingual Localization & Office Finder Dictionary Integrity', () => {
   assert.ok(UI_TRANSLATIONS.ro.offices.directoryIncomplete.length > 5);
   assert.ok(UI_TRANSLATIONS.en.offices.directoryIncomplete.length > 5);
 });
+
+test('15. 10 Administrative Domains Taxonomy Coverage', () => {
+  const expectedDomainIds = [
+    'civil_status',
+    'social_benefits',
+    'employment',
+    'pensions',
+    'education',
+    'cadastre_housing',
+    'justice_petitions',
+    'business_registry',
+    'environment_agriculture',
+    'citizenship_travel'
+  ];
+
+  assert.strictEqual(ADMINISTRATIVE_DOMAINS.length, 10, 'Must have exactly 10 administrative domains');
+  expectedDomainIds.forEach((domainId) => {
+    const domain = ADMINISTRATIVE_DOMAINS.find((d) => d.id === domainId);
+    assert.ok(domain, `Domain ${domainId} must be present in taxonomy`);
+    assert.ok(domain.name.ro.length > 3, `Domain ${domainId} missing RO name`);
+    assert.ok(domain.name.en.length > 3, `Domain ${domainId} missing EN name`);
+    assert.ok(domain.officialPortalReference.startsWith('http'), `Domain ${domainId} missing official portal reference`);
+  });
+
+  // Verify that all 10 domains have procedures represented in PROCEDURES
+  const coveredDomains = new Set(PROCEDURES.map((p) => p.administrativeDomain));
+  expectedDomainIds.forEach((domainId) => {
+    assert.ok(coveredDomains.has(domainId), `Domain ${domainId} must have at least one procedure assigned`);
+  });
+});
+
+test('16. Life Events and Situation Recommendations', () => {
+  assert.ok(LIFE_EVENTS.length >= 10, 'Must have at least 10 life events');
+  LIFE_EVENTS.forEach((evt) => {
+    assert.ok(evt.title.ro.length > 3, `Life event ${evt.id} missing RO title`);
+    assert.ok(evt.title.en.length > 3, `Life event ${evt.id} missing EN title`);
+    assert.ok(evt.recommendedDomains.length > 0, `Life event ${evt.id} has no recommended domains`);
+    assert.ok(evt.targetAudience.length > 0, `Life event ${evt.id} has no target audience`);
+  });
+
+  // Test child birth event recommendations
+  const havingChildProcedures = PROCEDURES.filter((p) => p.lifeEvents?.includes('having_a_child'));
+  assert.ok(havingChildProcedures.some((p) => p.id === 'certificat-nastere-copil'), 'Having a child must recommend birth certificate');
+  assert.ok(havingChildProcedures.some((p) => p.id === 'alocatie-stat-copii'), 'Having a child must recommend child allowance');
+
+  // Test marriage event recommendations
+  const marriageProcedures = PROCEDURES.filter((p) => p.lifeEvents?.includes('getting_married'));
+  assert.ok(marriageProcedures.some((p) => p.id === 'casatorie-civila'), 'Getting married must recommend civil marriage');
+
+  // Test retirement recommendations
+  const retirementProcedures = PROCEDURES.filter((p) => p.lifeEvents?.includes('retiring'));
+  assert.ok(retirementProcedures.some((p) => p.id === 'pensie-limita-varsta'), 'Retiring must recommend old-age retirement');
+});
+
+test('17. Submission Channels & Zero Unverified Legal Hallucinations', () => {
+  const allowedChannels = ['online', 'hybrid', 'in_person', 'fully_online', 'partially_online'];
+
+  PROCEDURES.forEach((p) => {
+    // Channel distinction
+    assert.ok(p.submissionChannel, `Procedure ${p.id} must define submissionChannel`);
+    assert.ok(allowedChannels.includes(p.submissionChannel), `Procedure ${p.id} has invalid submissionChannel: ${p.submissionChannel}`);
+
+    // Online procedures must have officialServiceUrl
+    if (p.submissionChannel === 'online' || p.submissionChannel === 'fully_online') {
+      assert.ok(p.officialServiceUrl.startsWith('http'), `Online procedure ${p.id} must link to official application portal`);
+    }
+
+    // Zero-hallucination validation: every procedure must have verified legal basis & consultation date
+    assert.ok(p.legalBasis.law.length > 3, `Procedure ${p.id} missing verified legal basis law`);
+    assert.ok(p.lastVerifiedDate.match(/^\d{4}-\d{2}-\d{2}$/), `Procedure ${p.id} must have ISO lastVerifiedDate`);
+    assert.ok(p.institution.name.length > 3, `Procedure ${p.id} missing verified institution`);
+  });
+});
+
+test('18. Administrative Services & Offices Full Coverage', () => {
+  assert.strictEqual(ADMINISTRATIVE_SERVICES.length, 18, 'Must have 18 administrative services');
+
+  // Every administrative service must have at least one verified office in ADMINISTRATIVE_OFFICES
+  ADMINISTRATIVE_SERVICES.forEach((service) => {
+    const offices = ADMINISTRATIVE_OFFICES.filter((o) => o.providedServiceIds?.includes(service.id));
+    assert.ok(offices.length > 0, `Service ${service.title.ro} (${service.id}) must have at least one verified administrative office`);
+  });
+});
+

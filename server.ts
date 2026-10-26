@@ -328,6 +328,59 @@ apiRouter.get(
   }
 );
 
+// Protected: Review and approve/update procedure editorial status
+apiRouter.post(
+  '/editorial/procedures/:id/review',
+  requireEditorAuth,
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { status, actor, notes } = req.body;
+
+    const procedure = PROCEDURES.find((p) => p.id === id);
+    if (!procedure) {
+      res.status(404).json({ error: 'Procedura nu a fost găsită în catalog.' });
+      return;
+    }
+
+    const validStatuses = ['verified', 'published', 'draft', 'under_review', 'archived', 'outdated'];
+    if (!validStatuses.includes(status)) {
+      res.status(400).json({ error: `Statut invalid. Statuturi permise: ${validStatuses.join(', ')}` });
+      return;
+    }
+
+    const reviewer = typeof actor === 'string' && actor.trim() ? actor.trim().slice(0, 80) : 'Redactor Juridic';
+    const now = new Date().toISOString();
+
+    // Update procedure in memory
+    procedure.editorialStatus = status;
+    procedure.editorialReviewDate = now.split('T')[0];
+    procedure.reviewedBy = reviewer;
+
+    const newLog: AuditLog = {
+      id: `review-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`,
+      timestamp: now,
+      actor: reviewer,
+      action: status === 'verified' || status === 'published' ? 'publish' : 'update',
+      procedureId: procedure.id,
+      procedureTitle: procedure.title.ro,
+      details: `Revizuire editorială pentru procedura [${procedure.title.ro}] -> Statut: ${status}. Note: ${typeof notes === 'string' ? notes.slice(0, 500) : 'Fără observații suplimentare.'}`
+    };
+
+    await saveAuditLog(newLog);
+
+    res.json({
+      message: 'Statutul editorial al procedurii a fost actualizat cu succes.',
+      procedure: {
+        id: procedure.id,
+        editorialStatus: procedure.editorialStatus,
+        editorialReviewDate: procedure.editorialReviewDate,
+        reviewedBy: procedure.reviewedBy
+      },
+      auditLog: newLog
+    });
+  }
+);
+
 // Form Preparation Templates (Public Read-Only)
 apiRouter.get('/forms/templates', (_req: Request, res: Response) => {
   res.json(FORM_TEMPLATES);

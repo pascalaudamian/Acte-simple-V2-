@@ -99,15 +99,16 @@ export const EditorialWorkflow: React.FC<EditorialWorkflowProps> = ({
     try {
       // If an editor token is provided, send real audit log to server API
       if (editorToken.trim()) {
-        const response = await fetch('/api/v1/sources/src-dgep-mai/check', {
+        const response = await fetch(`/api/v1/editorial/procedures/${selectedForReview.id}/review`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${editorToken.trim()}`
           },
           body: JSON.stringify({
+            status: newStatus,
             actor: reviewerName,
-            notes: `Revizie statut procedură [${selectedForReview.id}] -> ${newStatus}. ${reviewNote}`
+            notes: reviewNote
           })
         });
 
