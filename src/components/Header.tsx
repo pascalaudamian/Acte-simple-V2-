@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { UI_TRANSLATIONS } from '../utils/i18n';
-import { Globe, Menu, X, BookmarkCheck, ShieldCheck } from 'lucide-react';
+import { Globe, Menu, X, BookmarkCheck, ShieldCheck, Palette } from 'lucide-react';
 
 interface HeaderProps {
   lang: Language;
@@ -9,6 +9,8 @@ interface HeaderProps {
   activeTab: string;
   onNavigate: (tab: string, procedureId?: string) => void;
   savedCount: number;
+  theme: 'default' | 'civic';
+  onToggleTheme: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -17,6 +19,8 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   onNavigate,
   savedCount,
+  theme,
+  onToggleTheme,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = UI_TRANSLATIONS[lang];
@@ -130,6 +134,16 @@ export const Header: React.FC<HeaderProps> = ({
                 EN
               </button>
             </div>
+
+            <button
+              onClick={onToggleTheme}
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded border border-slate-700 text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
+              aria-label={theme === 'civic' ? 'Schimbă la tema standard' : 'Activează tema civică'}
+              title={theme === 'civic' ? 'Tema standard' : 'Tema civică'}
+            >
+              <Palette className="w-3.5 h-3.5" />
+              <span className="hidden xl:inline">{theme === 'civic' ? 'Standard' : 'Civic'}</span>
+            </button>
 
             {/* Quick Checklist Button (Desktop) */}
             <button

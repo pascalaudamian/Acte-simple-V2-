@@ -37,6 +37,7 @@ import {
 
 const STORAGE_KEY_LANG = 'actesimple_lang';
 const STORAGE_KEY_CHECKLISTS = 'actesimple_checklists';
+const STORAGE_KEY_THEME = 'actesimple_theme';
 
 export default function App() {
   // 1. Language state with URL sync & localStorage persistence
@@ -53,6 +54,10 @@ export default function App() {
 
   // 2. Navigation & View State
   const [activeTab, setActiveTab] = useState<string>('home');
+  const [theme, setTheme] = useState<'default' | 'civic'>(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem(STORAGE_KEY_THEME) === 'civic') return 'civic';
+    return 'default';
+  });
   const [selectedProcedureId, setSelectedProcedureId] = useState<string | null>(null);
   const [officeFinderServiceId, setOfficeFinderServiceId] = useState<string | undefined>(undefined);
   const [officeFinderCountyCode, setOfficeFinderCountyCode] = useState<string | undefined>(undefined);
@@ -81,6 +86,14 @@ export default function App() {
   });
 
   // Sync language change
+  const handleToggleTheme = () => {
+    setTheme((current) => {
+      const next = current === 'default' ? 'civic' : 'default';
+      localStorage.setItem(STORAGE_KEY_THEME, next);
+      return next;
+    });
+  };
+
   const handleLanguageChange = (newLang: Language) => {
     setLang(newLang);
     localStorage.setItem(STORAGE_KEY_LANG, newLang);
@@ -339,7 +352,7 @@ export default function App() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+    <div className={`min-h-screen flex flex-col bg-slate-50 text-slate-900 ${theme === 'civic' ? 'theme-civic' : ''}`}>
       {/* Offline Alert Banner */}
       {!isOnline && (
         <div className="bg-amber-600 text-white text-xs py-2 px-4 text-center font-medium flex items-center justify-center gap-2">
@@ -359,6 +372,8 @@ export default function App() {
         activeTab={activeTab}
         onNavigate={handleNavigate}
         savedCount={savedCount}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Main App Content Router */}

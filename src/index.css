@@ -8,6 +8,33 @@
   }
 }
 
+/* Secondary civic theme: a lighter, denser administrative workspace. */
+.theme-civic {
+  --civic-blue: #2146d0;
+  --civic-ink: #16325c;
+  --civic-muted: #60708b;
+  --civic-border: #d8e1f0;
+  --civic-surface: #ffffff;
+  background: #f5f8fc;
+}
+
+.theme-civic .bg-slate-50 { background-color: #f5f8fc !important; }
+.theme-civic .bg-slate-900 { background-color: var(--civic-surface) !important; color: var(--civic-ink) !important; }
+.theme-civic .bg-slate-950 { background-color: #eef3fa !important; }
+.theme-civic .text-white { color: var(--civic-ink) !important; }
+.theme-civic .text-slate-300 { color: var(--civic-muted) !important; }
+.theme-civic .text-slate-400 { color: #74839b !important; }
+.theme-civic .border-slate-800,
+.theme-civic .border-slate-700 { border-color: var(--civic-border) !important; }
+.theme-civic .bg-indigo-900\/90 { background-color: #2146d0 !important; color: white !important; }
+.theme-civic .bg-indigo-900\/90 .text-white,
+.theme-civic .bg-indigo-900\/90 .text-indigo-200 { color: white !important; }
+.theme-civic .bg-amber-500 { background-color: #f5a623 !important; }
+.theme-civic .text-amber-400,
+.theme-civic .text-amber-300 { color: #a76400 !important; }
+.theme-civic header { box-shadow: 0 1px 8px rgba(34, 61, 105, 0.08); }
+.theme-civic .procedure-card { border-color: var(--civic-border); box-shadow: 0 2px 8px rgba(40, 69, 120, 0.06); }
+
 /* Print layout for checklists and official form previews */
 @media print {
   header, nav, footer, .no-print, button:not(.print-allow) {
