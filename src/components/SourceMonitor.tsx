@@ -265,7 +265,7 @@ export const SourceMonitor: React.FC<SourceMonitorProps> = ({ lang }) => {
                     </td>
 
                     <td className="py-3.5 px-4 font-mono text-slate-500 whitespace-nowrap">
-                      {new Date(src.lastCheckedTimestamp).toLocaleDateString('ro-RO')} {new Date(src.lastCheckedTimestamp).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}
+                      {src.lastCheckedTimestamp ? `${new Date(src.lastCheckedTimestamp).toLocaleDateString('ro-RO')} ${new Date(src.lastCheckedTimestamp).toLocaleTimeString('ro-RO', { hour: '2-digit', minute: '2-digit' })}` : '—'}
                     </td>
 
                     <td className="py-3.5 px-4 text-right whitespace-nowrap">

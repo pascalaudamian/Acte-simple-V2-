@@ -451,7 +451,7 @@ export default function App() {
               </div>
             </section>
 
-            {/* Life Events Assistant Hero Banner */
+            {/* Life Events Assistant Hero Banner */}
             <section className="bg-indigo-900/90 text-white border-b border-indigo-800 py-6 px-4 sm:px-6 lg:px-8">
               <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="space-y-1 text-center sm:text-left">

@@ -234,8 +234,8 @@ export interface OfficialSource {
   authorityType: string;
   sourceUrl: string;
   relatedProcedureIds: string[];
-  lastCheckedTimestamp: string;
-  lastSuccessfulCheck: string;
+  lastCheckedTimestamp: string | null;
+  lastSuccessfulCheck: string | null;
   status: 'verified' | 'change_detected' | 'review_required';
   lastChangeSummary?: string;
   notes: string;
